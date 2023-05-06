@@ -41,6 +41,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  evalCode,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -754,6 +755,12 @@ export function Chat() {
                         onClick={() => copyToClipboard(message.content)}
                       >
                         {Locale.Chat.Actions.Copy}
+                      </div>
+                      <div
+                        className={styles["chat-message-top-action"]}
+                        onClick={() => evalCode(message.content)}
+                      >
+                        {Locale.Chat.Actions.Run}
                       </div>
                     </div>
                   )}

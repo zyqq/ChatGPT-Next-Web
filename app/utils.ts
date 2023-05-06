@@ -26,6 +26,19 @@ export async function copyToClipboard(text: string) {
   }
 }
 
+export async function evalCode(text: string) {
+  const regex = /```javascript([\s\S]*)```/;
+  const match = text.match(regex);
+
+  if (match) {
+    const code = match[1];
+    console.log(code);
+    eval(code);
+  } else {
+    console.log("No match found.");
+  }
+}
+
 export function downloadAs(text: string, filename: string) {
   const element = document.createElement("a");
   element.setAttribute(
