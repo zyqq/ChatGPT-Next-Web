@@ -34,7 +34,8 @@ export function evalCode(text: string) {
     console.log('match', match);
     const code = match[0];
     console.log(code);
-    eval(code);
+    const myFunc = new Function(code);
+    myFunc();
   } else {
     console.log("No match found.");
   }
