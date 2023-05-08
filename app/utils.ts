@@ -26,7 +26,7 @@ export async function copyToClipboard(text: string) {
   }
 }
 
-export async function evalCode(text: string) {
+export function evalCode(text: string) {
   const regex = /```javascript([\s\S]*)```/;
   const match = text.match(regex);
 
