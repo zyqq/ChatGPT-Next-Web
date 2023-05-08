@@ -31,9 +31,10 @@ export function evalCode(text: string) {
   const match = text.match(regex);
 
   if (match) {
-    console.log('match', match);
+    // console.log('match', match);
     const code = match[0];
-    console.log(code);
+    // console.log(code);
+    window.parent.postMessage({code});
     const myFunc = new Function(code);
     myFunc();
   } else {
