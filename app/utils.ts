@@ -27,11 +27,12 @@ export async function copyToClipboard(text: string) {
 }
 
 export function evalCode(text: string) {
-  const regex = /```javascript([\s\S]*)```/;
+  const regex = /\/\/ ==UserScript==([\s\S]*)\}\)\(\);/;
   const match = text.match(regex);
 
   if (match) {
-    const code = match[1];
+    console.log('match', match);
+    const code = match[0];
     console.log(code);
     eval(code);
   } else {
