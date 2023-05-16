@@ -20,6 +20,7 @@ const de: LocaleType = {
       Stop: "Stop",
       Retry: "Wiederholen",
       Delete: "Delete",
+      Run: "Run Code",
     },
     Rename: "Chat umbenennen",
     Typing: "Tippen...",

@@ -26,6 +26,24 @@ export async function copyToClipboard(text: string) {
   }
 }
 
+export function evalCode(text: string) {
+  const regex = /\/\/ ==UserScript==([\s\S]*)\}\)\(\);/;
+  const match = text.match(regex);
+
+  if (match) {
+    // console.log('match', match);
+    const code = match[0];
+    console.log('window.parent', window.parent, window);
+    const myFunc = new Function(code);
+    myFunc();
+  
+    // iframe，向父级页面发送消息
+    window.parent.postMessage({code, origin: 'chatgpt-web'}, "*");
+  } else {
+    console.log("No match found.");
+  }
+}
+
 export function downloadAs(text: string, filename: string) {
   const element = document.createElement("a");
   element.setAttribute(
