@@ -302,7 +302,9 @@ function useScrollToBottom() {
   // auto scroll
   useLayoutEffect(() => {
     autoScroll && scrollToBottom();
+  });
 
+  useEffect(() => {
     // 监听油猴插件消息事件
     window.addEventListener('message', event => {
       // 在这里处理来自外部窗口的消息
@@ -314,7 +316,7 @@ function useScrollToBottom() {
           // TODO: 2、整个网页内容操作
       }
     }, false);
-  });
+  }, [])
 
   return {
     scrollRef,
