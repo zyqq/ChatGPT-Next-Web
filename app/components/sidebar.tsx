@@ -6,6 +6,7 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
+import WebsiteIcon from "../icons/website.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
@@ -21,6 +22,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  WEB_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -176,6 +178,11 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href={WEB_URL} target="_blank">
+              <IconButton icon={<WebsiteIcon />} shadow />
             </a>
           </div>
         </div>

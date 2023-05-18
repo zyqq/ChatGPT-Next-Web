@@ -39,6 +39,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  evalCode,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -301,6 +302,18 @@ function useScrollToBottom() {
   // auto scroll
   useLayoutEffect(() => {
     autoScroll && scrollToBottom();
+
+    // 监听油猴插件消息事件
+    window.addEventListener('message', event => {
+      // 在这里处理来自外部窗口的消息
+      if(event.data.origin && event.data.origin === 'parent') {
+          console.log('parent', event.data, event);
+          if(event.data.selectionText) {
+            // TODO: 1、选择的文本操作
+          }
+          // TODO: 2、整个网页内容操作
+      }
+    }, false);
   });
 
   return {
@@ -765,6 +778,12 @@ export function Chat() {
                         onClick={() => copyToClipboard(message.content)}
                       >
                         {Locale.Chat.Actions.Copy}
+                      </div>
+                      <div
+                        className={styles["chat-message-top-action"]}
+                        onClick={() => evalCode(message.content)}
+                      >
+                        {Locale.Chat.Actions.Run}
                       </div>
                     </div>
                   )}
