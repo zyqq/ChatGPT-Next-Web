@@ -14,6 +14,7 @@ import MaskIcon from "../icons/mask.svg";
 import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
+import ReadIcon from "../icons/read.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -40,6 +41,8 @@ import {
   autoGrowTextArea,
   useMobileScreen,
   evalCode,
+  postMsg,
+  handleMsg,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -304,20 +307,6 @@ function useScrollToBottom() {
     autoScroll && scrollToBottom();
   });
 
-  useEffect(() => {
-    // 监听油猴插件消息事件
-    window.addEventListener('message', event => {
-      // 在这里处理来自外部窗口的消息
-      if(event.data.origin && event.data.origin === 'parent') {
-          console.log('parent', event.data, event);
-          if(event.data.selectionText) {
-            // TODO: 1、选择的文本操作
-          }
-          // TODO: 2、整个网页内容操作
-      }
-    }, false);
-  }, [])
-
   return {
     scrollRef,
     autoScroll,
@@ -403,6 +392,13 @@ export function ChatActions(props: {
         }}
       >
         <MaskIcon />
+      </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => postMsg({ type: 'read' })}
+      >
+        <ReadIcon />
       </div>
     </div>
   );
@@ -499,6 +495,38 @@ export function Chat() {
     if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
+
+  useEffect(() => {
+    // handleMsg().then((res: any) => {
+    //   // doSubmit('请总结以下文本内容，我将分为几段发送：')
+    //   // res.forEach((item: string, index: number) => {
+    //   //   doSubmit(`第${index+1}段内容为: ${item}`)
+    //   // })
+    //   // doSubmit('请总结以上几段文本内容');
+    //   doSubmit(`请总结以下文本内容: ${res.join('')}`)
+    // });
+
+    // 监听油猴插件消息事件
+    window.addEventListener('message', event => {
+      // 在这里处理来自外部窗口的消息
+      if(event.data.origin && event.data.origin === 'parent') {
+          console.log('parent', event.data, event);
+          if(event.data.selectionText) {
+            // TODO: 1、选择的文本操作
+          }
+          // TODO: 2、整个网页内容操作
+          if(event.data.type === "read") {
+            console.log('event.data', event.data.data.content);
+            // doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
+            doSubmit('请总结以下文本内容，我将分为几段发送：')
+            event.data.data.content.forEach((item: string, index: number) => {
+              doSubmit(`第${index+1}段内容为: ${item}`)
+            })
+          }
+      }
+    }, false);
+  }, [])
+
 
   // stop response
   const onUserStop = (messageId: number) => {
