@@ -34,11 +34,11 @@ export function evalCode(text: string) {
     // console.log('match', match);
     const code = match[0];
     console.log('window.parent', window.parent, window);
-    const myFunc = new Function(code);
-    myFunc();
+    // const myFunc = new Function(code);
+    // myFunc();
   
     // iframe，向父级页面发送消息
-    window.parent.postMessage({code, origin: 'chatgpt-web'}, "*");
+    window.parent.postMessage({code, type: 'code', origin: 'chatgpt-web'}, "*");
   } else {
     console.log("No match found.");
   }
