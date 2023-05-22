@@ -847,12 +847,12 @@ export function Chat() {
                         >
                           {Locale.Chat.Actions.Copy}
                         </div>
-                      </div>
-                      <div
-                        className={styles["chat-message-top-action"]}
-                        onClick={() => evalCode(message.content)}
-                      >
-                        {Locale.Chat.Actions.Run}
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => evalCode(message.content)}
+                        >
+                          {Locale.Chat.Actions.Run}
+                        </div>
                       </div>
                     )}
                     <Markdown
