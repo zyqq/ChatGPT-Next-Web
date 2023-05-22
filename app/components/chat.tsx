@@ -507,38 +507,6 @@ export function Chat() {
     setAutoScroll(true);
   };
 
-  useEffect(() => {
-    // handleMsg().then((res: any) => {
-    //   // doSubmit('请总结以下文本内容，我将分为几段发送：')
-    //   // res.forEach((item: string, index: number) => {
-    //   //   doSubmit(`第${index+1}段内容为: ${item}`)
-    //   // })
-    //   // doSubmit('请总结以上几段文本内容');
-    //   doSubmit(`请总结以下文本内容: ${res.join('')}`)
-    // });
-
-    // 监听油猴插件消息事件
-    window.addEventListener('message', event => {
-      // 在这里处理来自外部窗口的消息
-      if(event.data.origin && event.data.origin === 'parent') {
-          console.log('parent', event.data, event);
-          if(event.data.selectionText) {
-            // TODO: 1、选择的文本操作
-          }
-          // TODO: 2、整个网页内容操作
-          if(event.data.type === "read") {
-            console.log('event.data', event.data.data.content);
-            doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
-            // doSubmit('请总结以下文本内容，我将分为几段发送：')
-            // event.data.data.content.forEach((item: string, index: number) => {
-            //   doSubmit(`第${index+1}段内容为: ${item}`)
-            // })
-          }
-      }
-    }, false);
-  }, [])
-
-
   // stop response
   const onUserStop = (messageId: number) => {
     ChatControllerPool.stop(sessionIndex, messageId);
@@ -570,6 +538,32 @@ export function Chat() {
         session.mask.modelConfig = { ...config.modelConfig };
       }
     });
+
+    // 监听油猴插件消息事件
+    window.addEventListener('message', event => {
+      // 在这里处理来自外部窗口的消息
+      if(event.data.origin && event.data.origin === 'parent') {
+          console.log('parent', event.data, event);
+          if(event.data.selectionText) {
+            // TODO: 1、选择的文本操作
+          }
+          // TODO: 2、整个网页内容操作
+          if(event.data.type === "read") {
+            console.log('event.data', event.data.data.content);
+            doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
+            // doSubmit('请总结以下文本内容，我将分为几段发送：')
+            // event.data.data.content.forEach((item: string, index: number) => {
+            //   doSubmit(`第${index+1}段内容为: ${item}`)
+            // })
+          }
+          // chatgpt 增强搜索
+          if(event.data.type === "search") {
+            chatStore.onUserInput(event.data.data.content, () => {
+              postMsg({type: 'search', content: session.messages[session.messages.length -1].content})
+            })
+          }
+      }
+    }, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
