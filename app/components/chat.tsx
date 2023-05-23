@@ -561,7 +561,7 @@ export function Chat() {
             chatStore.newSession();
             chatStore.selectSession(0);
             navigate(Path.Chat);
-            chatStore.onUserInput(`搜索查询“${event.data.data.content}”`, () => {
+            chatStore.onUserInput(event.data.data.content, () => {
               const currentSession = chatStore.currentSession();
               console.log('currentSession', chatStore)
               postMsg({type: 'search', content: currentSession.messages[currentSession.messages.length -1].content})
