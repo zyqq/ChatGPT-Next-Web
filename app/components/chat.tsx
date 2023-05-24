@@ -572,8 +572,8 @@ export function Chat() {
           if(event.data.type === "search") {
             createSession(event.data.type)
           }
-          // chatgpt 解释
-          if(event.data.type === 'explain') {
+          // chatgpt 选中文本
+          if(event.data.type === 'selectText') {
             createSession(event.data.type)
           }
       }
