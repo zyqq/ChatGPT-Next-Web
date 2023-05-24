@@ -544,6 +544,18 @@ export function Chat() {
       // 在这里处理来自外部窗口的消息
       if(event.data.origin && event.data.origin === 'parent') {
           console.log('parent', event.data, event);
+          const createSession = (type: string) => {
+            chatStore.newSession();
+            chatStore.selectSession(0);
+            navigate(Path.Chat);
+            chatStore.onUserInput(event.data.data.content, () => {
+              const currentSession = chatStore.currentSession();
+              console.log('currentSession', chatStore)
+              postMsg({type, content: currentSession.messages[currentSession.messages.length -1].content})
+            })
+          }
+
+
           if(event.data.selectionText) {
             // TODO: 1、选择的文本操作
           }
@@ -558,14 +570,11 @@ export function Chat() {
           }
           // chatgpt 增强搜索
           if(event.data.type === "search") {
-            chatStore.newSession();
-            chatStore.selectSession(0);
-            navigate(Path.Chat);
-            chatStore.onUserInput(event.data.data.content, () => {
-              const currentSession = chatStore.currentSession();
-              console.log('currentSession', chatStore)
-              postMsg({type: 'search', content: currentSession.messages[currentSession.messages.length -1].content})
-            })
+            createSession(event.data.type)
+          }
+          // chatgpt 解释
+          if(event.data.type === 'explain') {
+            createSession(event.data.type)
           }
       }
     }, false);
