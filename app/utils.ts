@@ -50,7 +50,7 @@ export function handleMsg() {
   })
 }
 
-export function evalCode(text: string) {
+export function evalCode(text: string, key: number) {
   const regex = /\/\/ ==UserScript==([\s\S]*)\}\)\(\);/;
   const match = text.match(regex);
 
@@ -62,7 +62,7 @@ export function evalCode(text: string) {
     // myFunc();
   
     // iframe，向父级页面发送消息
-    postMsg({ content: code, type: 'code'})
+    postMsg({ content: code, key, type: 'code'})
   } else {
     console.log("No match found.");
   }

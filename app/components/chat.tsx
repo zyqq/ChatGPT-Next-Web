@@ -857,7 +857,7 @@ export function Chat() {
                         </div>
                         <div
                           className={styles["chat-message-top-action"]}
-                          onClick={() => evalCode(message.content)}
+                          onClick={() => evalCode(message.content, message.id)}
                         >
                           {Locale.Chat.Actions.Run}
                         </div>
