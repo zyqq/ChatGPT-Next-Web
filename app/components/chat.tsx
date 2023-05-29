@@ -538,6 +538,7 @@ export function Chat() {
         session.mask.modelConfig = { ...config.modelConfig };
       }
     });
+    postMsg({type: 'ready'})
 
     // 监听油猴插件消息事件
     window.addEventListener('message', event => {
@@ -555,11 +556,7 @@ export function Chat() {
             })
           }
 
-
-          if(event.data.selectionText) {
-            // TODO: 1、选择的文本操作
-          }
-          // TODO: 2、整个网页内容操作
+          // 整个网页内容操作
           if(event.data.type === "read") {
             console.log('event.data', event.data.data.content);
             doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
