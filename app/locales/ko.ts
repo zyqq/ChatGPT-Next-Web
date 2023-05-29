@@ -20,6 +20,7 @@ const ko: LocaleType = {
       Stop: "중지",
       Retry: "다시 시도",
       Delete: "삭제",
+      Run: "Run Code",
     },
     Rename: "채팅 이름 변경",
     Typing: "입력 중...",

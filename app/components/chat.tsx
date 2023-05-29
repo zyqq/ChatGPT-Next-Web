@@ -15,6 +15,7 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
+import ReadIcon from "../icons/read.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -40,6 +41,9 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  evalCode,
+  postMsg,
+  handleMsg,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -398,6 +402,13 @@ export function ChatActions(props: {
       >
         <BreakIcon />
       </div>
+
+      <div
+        className={`${chatStyle["chat-input-action"]} clickable`}
+        onClick={() => postMsg({ type: 'read' })}
+      >
+        <ReadIcon />
+      </div>
     </div>
   );
 }
@@ -527,6 +538,46 @@ export function Chat() {
         session.mask.modelConfig = { ...config.modelConfig };
       }
     });
+
+    // 监听油猴插件消息事件
+    window.addEventListener('message', event => {
+      // 在这里处理来自外部窗口的消息
+      if(event.data.origin && event.data.origin === 'parent') {
+          console.log('parent', event.data, event);
+          const createSession = (type: string) => {
+            chatStore.newSession();
+            chatStore.selectSession(0);
+            navigate(Path.Chat);
+            chatStore.onUserInput(event.data.data.content, () => {
+              const currentSession = chatStore.currentSession();
+              console.log('currentSession', chatStore)
+              postMsg({type, content: currentSession.messages[currentSession.messages.length -1].content})
+            })
+          }
+
+
+          if(event.data.selectionText) {
+            // TODO: 1、选择的文本操作
+          }
+          // TODO: 2、整个网页内容操作
+          if(event.data.type === "read") {
+            console.log('event.data', event.data.data.content);
+            doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
+            // doSubmit('请总结以下文本内容，我将分为几段发送：')
+            // event.data.data.content.forEach((item: string, index: number) => {
+            //   doSubmit(`第${index+1}段内容为: ${item}`)
+            // })
+          }
+          // chatgpt 增强搜索
+          if(event.data.type === "search") {
+            createSession(event.data.type)
+          }
+          // chatgpt 选中文本
+          if(event.data.type === 'selectText') {
+            createSession(event.data.type)
+          }
+      }
+    }, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -803,6 +854,12 @@ export function Chat() {
                           onClick={() => copyToClipboard(message.content)}
                         >
                           {Locale.Chat.Actions.Copy}
+                        </div>
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => evalCode(message.content, message.id)}
+                        >
+                          {Locale.Chat.Actions.Run}
                         </div>
                       </div>
                     )}

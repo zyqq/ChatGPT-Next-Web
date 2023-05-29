@@ -85,7 +85,7 @@ interface ChatStore {
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (content: string, cb?: Function) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -232,7 +232,7 @@ export const useChatStore = create<ChatStore>()(
         get().summarizeSession();
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, finishCb = () => {}) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -299,6 +299,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.id ?? messageIndex,
             );
             set(() => ({}));
+            finishCb()
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
