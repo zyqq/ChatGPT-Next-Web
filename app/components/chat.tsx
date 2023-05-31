@@ -559,7 +559,8 @@ export function Chat() {
           // 整个网页内容操作
           if(event.data.type === "read") {
             console.log('event.data', event.data.data.content);
-            doSubmit(`请总结以下文本内容: ${event.data.data.content.join('')}`)
+            doSubmit(`${event.data.data.content.join('')}。
+            请总结以上文本内容`)
             // doSubmit('请总结以下文本内容，我将分为几段发送：')
             // event.data.data.content.forEach((item: string, index: number) => {
             //   doSubmit(`第${index+1}段内容为: ${item}`)
