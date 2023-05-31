@@ -574,6 +574,10 @@ export function Chat() {
           if(event.data.type === 'selectText') {
             createSession(event.data.type)
           }
+          // chatgpt 选中文本
+          if(event.data.type === 'clickElement') {
+            // setUserInput(event.data.data.content);
+          }
       }
     }, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
