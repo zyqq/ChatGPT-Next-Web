@@ -7,9 +7,9 @@
 
 [演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N) / [QQ 群](https://user-images.githubusercontent.com/16968934/228190818-7dd00845-e9b9-4363-97e5-44c507ac76da.jpeg) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg) / [Donate](#捐赠-donate-usdt)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Zo3i/chatgptWithMidjourney&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Zo3i/chatgptWithMidjourney)
 
 ![主界面](./docs/images/cover.png)
 
@@ -19,9 +19,24 @@
 
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. 点击右侧按钮开始部署：
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)，直接使用 Github 账号登录即可，记得在环境变量页填入 API Key 和[页面访问密码](#配置页面访问密码) CODE；
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Zo3i/chatgptWithMidjourney&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+，直接使用 Github 账号登录即可，记得在环境变量页填入 API Key 和[页面访问密码](#配置页面访问密码) CODE；
 3. 部署完毕后，即可开始使用；
 4. （可选）[绑定自定义域名](https://vercel.com/docs/concepts/projects/domains/add-a-domain)：Vercel 分配的域名 DNS 在某些区域被污染了，绑定自定义域名即可直连。
+
+### 如何使用Midjourney
+- 在.env.local(没有要创建)中添加MIDJOURNEY_API_KEY、MIDJOURNEY_API_URL。接口地址和key
+  ```local
+   示例:
+   OPENAI_API_KEY=sk-xxx
+   MIDJOURNEY_API_KEY=35fc0377-ca20-4244-8e44-7a930b7591ab
+   MIDJOURNEY_API_URL=https://api.zxx.im/
+   ```
+- 输入/mj 即可使用绘图模式
+- 绘图期间请勿刷新网页、切换别的聊天窗口。
+- [MidjourneyAPI](https://midjourneyapi.zxx.im/)
+
+![](https://s3.bmp.ovh/imgs/2023/05/15/f0c7f67ef3eb075b.png)
 
 ## 保持更新
 
@@ -104,7 +119,7 @@ OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填�
 
 点击下方按钮，开始二次开发：
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Zo3i/chatgptWithMidjourney)
 
 在开始写代码之前，需要在项目根目录新建一个 `.env.local` 文件，里面填入环境变量：
 
@@ -127,12 +142,12 @@ OPENAI_API_KEY=<your api key here>
 > ⚠️ 注意：docker 版本在大多数时间都会落后最新的版本 1 到 2 天，所以部署后会持续出现“存在更新”的提示，属于正常现象。
 
 ```shell
-docker pull yidadaa/chatgpt-next-web
+docker pull zo3i/chatgptwithmidjourney
 
 docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
    -e CODE="页面访问密码" \
-   yidadaa/chatgpt-next-web
+   zo3i/chatgptwithmidjourney
 ```
 
 你也可以指定 proxy：
@@ -143,20 +158,11 @@ docker run -d -p 3000:3000 \
    -e CODE="页面访问密码" \
    --net=host \
    -e PROXY_URL="http://127.0.0.1:7890" \
-   yidadaa/chatgpt-next-web
+   zo3i/chatgptwithmidjourney
 ```
 
 如果你需要指定其他环境变量，请自行在上述命令中增加 `-e 环境变量=环境变量值` 来指定。
 
-### 本地部署
-
-在控制台运行下方命令：
-
-```shell
-bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/scripts/setup.sh)
-```
-
-⚠️ 注意：如果你安装过程中遇到了问题，请使用 docker 部署。
 
 ## 鸣谢
 

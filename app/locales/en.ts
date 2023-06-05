@@ -16,6 +16,7 @@ const en: LocaleType = {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
       Export: "Export All Messages as Markdown",
+      Open: "Open",
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
@@ -140,6 +141,33 @@ const en: LocaleType = {
       Title: "API Key",
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
+    },
+    MjKey: {
+      Title: "MJ API Key",
+      SubTitle: "Quickly configure MJ API Key",
+      Placeholder: "Midjourney API Key",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "Configure MJ API URL",
+      Placeholder: "Midjourney API URL",
+    },
+
+    MjMode: {
+      name: "MJ Quick Mapping",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Contains http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Access Code",
+      SubTitle: "Admin has enabled encrypted access",
+      Placeholder: "Please enter the access code",
     },
     Usage: {
       Title: "Account Balance",

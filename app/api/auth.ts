@@ -69,3 +69,27 @@ export function auth(req: NextRequest) {
     error: false,
   };
 }
+
+export function authMj(req: NextRequest) {
+  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  console.log("[User IP] ", getIP(req));
+  console.log("[Time] ", new Date().toLocaleString());
+
+  // 注入midjourneyAPI
+  const midJourneyKey = req.headers.get("token")
+    ? req.headers.get("token")
+    : serverConfig.midJourneyKey;
+  console.log(">>> 注入midjourneyAPI: ", midJourneyKey);
+  if (midJourneyKey) {
+    req.headers.set("token", midJourneyKey);
+  } else {
+    return {
+      error: true,
+      msg: "Empty Midjourney Api Key. Go to: [MidjourneyAPI](https://midjourneyapi.zxx.im/)",
+    };
+  }
+
+  return {
+    error: false,
+  };
+}
