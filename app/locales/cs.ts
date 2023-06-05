@@ -157,6 +157,7 @@ const cs: LocaleType = {
 
     MjMode: {
       name: "MJ Rychlý režim",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -166,7 +167,7 @@ const cs: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Přístupové heslo",
+      Title: "Midjourney Přístupové heslo",
       SubTitle: "Správce povolil šifrovaný přístup",
       Placeholder: "Zadejte přístupové heslo",
     },

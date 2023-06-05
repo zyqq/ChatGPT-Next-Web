@@ -150,7 +150,7 @@ const cn = {
 
     MjKey: {
       Title: "MJ API Key",
-      SubTitle: "快捷配置MJ API Key",
+      SubTitle: "配置后再在聊天框输入/mj+提示词",
       Placeholder: "Midjourney API Key",
     },
 
@@ -162,6 +162,7 @@ const cn = {
 
     MjMode: {
       name: "MJ 快速制图",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -171,7 +172,7 @@ const cn = {
     },
 
     MJAccessCode: {
-      Title: "访问密码",
+      Title: "Midjourney 访问密码",
       SubTitle: "管理员已开启加密访问",
       Placeholder: "请输入访问密码",
     },

@@ -146,6 +146,7 @@ const de: LocaleType = {
 
     MjMode: {
       name: "MJ Schnellmodus-Kartenerstellung",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -155,7 +156,7 @@ const de: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Zugangscode",
+      Title: "Midjourney Zugangscode",
       SubTitle:
         "Der Administrator hat die verschlüsselte Zugriffsoption aktiviert",
       Placeholder: "Bitte geben Sie den Zugangscode ein",

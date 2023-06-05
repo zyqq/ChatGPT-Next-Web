@@ -15,6 +15,7 @@ export interface AccessControlStore {
   midJourneyAPI: string;
   midJourneyKey: string;
   midJourneyAPIURL: string;
+  midJourneyAccessCode: string;
   mjMode: boolean;
   proxyUrl: string;
 
@@ -22,6 +23,7 @@ export interface AccessControlStore {
   updateMJProxyUrl: (_: string) => void;
   updateToken: (_: string) => void;
   updateMJKey: (_: string) => void;
+  updateMjCode: (_: string) => void;
   updateAPIURL: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
@@ -42,9 +44,11 @@ export const useAccessStore = create<AccessControlStore>()(
       midJourneyAPI: "/api/midjourney/",
       midJourneyKey: "",
       midJourneyAPIURL: "",
+      midJourneyAccessCode: "",
       mjMode: true,
       proxyUrl: "",
 
+      // TODO:midJourneyAccessCode与accessCode共用这个逻辑
       enabledAccessControl() {
         get().fetch();
 
@@ -67,6 +71,9 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       updateMJProxyUrl(proxyUrl: string) {
         set(() => ({ proxyUrl }));
+      },
+      updateMjCode(code: string) {
+        set(() => ({ midJourneyAccessCode: code }));
       },
       isAuthorized() {
         get().fetch();

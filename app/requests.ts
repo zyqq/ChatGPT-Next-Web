@@ -1,6 +1,6 @@
 import type { ChatRequest, ChatResponse } from "./api/openai/typing";
 import {
-  Message,
+  ChatMessage,
   ModelConfig,
   ModelType,
   useAccessStore,
@@ -15,7 +15,7 @@ import { requestMidJourney } from "./api/common";
 const TIME_OUT_MS = 60000;
 
 const makeRequestParam = (
-  messages: Message[],
+  messages: ChatMessage[],
   options?: {
     stream?: boolean;
     overrideModel?: ModelType;
@@ -70,7 +70,16 @@ export function getHeaders() {
   const validString = (x: string) => x && x.length > 0;
 
   // mj key
-  headers.token = accessStore.midJourneyKey;
+  // headers.token = accessStore.midJourneyKey;
+  // use user's mj key first
+  if (validString(accessStore.midJourneyKey)) {
+    headers.token = accessStore.midJourneyKey;
+  } else if (
+    accessStore.enabledAccessControl() &&
+    validString(accessStore.midJourneyAccessCode)
+  ) {
+    headers.token = ACCESS_CODE_PREFIX + accessStore.midJourneyAccessCode;
+  };
 
   // use user's api key first
   if (validString(accessStore.token)) {
@@ -108,7 +117,7 @@ export function requestMidjourney(path: string) {
 }
 
 export async function requestChat(
-  messages: Message[],
+  messages: ChatMessage[],
   options?: {
     model?: ModelType;
   },
@@ -217,7 +226,7 @@ export async function requestUsage() {
 }
 
 export async function requestChatStream(
-  messages: Message[],
+  messages: ChatMessage[],
   options?: {
     modelConfig?: ModelConfig;
     overrideModel?: ModelType;
@@ -298,7 +307,7 @@ export async function requestChatStream(
 }
 
 export async function requestWithPrompt(
-  messages: Message[],
+  messages: ChatMessage[],
   prompt: string,
   options?: {
     model?: ModelType;

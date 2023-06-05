@@ -145,6 +145,7 @@ const ru: LocaleType = {
 
     MjMode: {
       name: "Быстрый режим MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -154,7 +155,7 @@ const ru: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Код доступа",
+      Title: "Midjourney Код доступа",
       SubTitle: "Администратор активировал зашифрованный доступ",
       Placeholder: "Введите код доступа",
     },

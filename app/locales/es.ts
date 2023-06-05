@@ -144,6 +144,7 @@ const es: LocaleType = {
 
     MjMode: {
       name: "Modo rápido de MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -153,7 +154,7 @@ const es: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Código de acceso",
+      Title: "Midjourney Código de acceso",
       SubTitle: "El administrador ha habilitado el acceso encriptado",
       Placeholder: "Por favor, ingresa el código de acceso",
     },

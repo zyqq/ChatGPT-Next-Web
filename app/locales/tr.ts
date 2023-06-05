@@ -144,6 +144,7 @@ const tr: LocaleType = {
 
     MjMode: {
       name: "MJ Hızlı Harita Modu",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -153,7 +154,7 @@ const tr: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Erişim Kodu",
+      Title: "Midjourney Erişim Kodu",
       SubTitle: "Yönetici şifreli erişimi etkinleştirdi",
       Placeholder: "Lütfen erişim kodunu girin",
     },

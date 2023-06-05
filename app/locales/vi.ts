@@ -143,6 +143,7 @@ const vi: LocaleType = {
 
     MjMode: {
       name: "Chế độ Nhanh MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -152,7 +153,7 @@ const vi: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Mã Truy cập",
+      Title: "Midjourney Mã Truy cập",
       SubTitle: "Quản trị viên đã bật chế độ truy cập mã hóa",
       Placeholder: "Vui lòng nhập mã truy cập",
     },

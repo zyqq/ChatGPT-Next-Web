@@ -146,6 +146,7 @@ const jp: LocaleType = {
 
     MjMode: {
       name: "MJクイックモード",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -155,7 +156,7 @@ const jp: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "アクセスコード",
+      Title: "Midjourney アクセスコード",
       SubTitle: "管理者によって暗号化アクセスが有効化されています",
       Placeholder: "アクセスコードを入力してください",
     },

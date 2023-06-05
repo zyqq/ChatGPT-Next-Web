@@ -544,6 +544,23 @@ export function Settings() {
         </List>
 
         <List>
+          {enabledAccessControl ? (
+            <ListItem
+              title={Locale.Settings.MJAccessCode.Title}
+              subTitle={Locale.Settings.MJAccessCode.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.midJourneyAccessCode}
+                type="text"
+                placeholder={Locale.Settings.MJAccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateMjCode(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : (
+            <></>
+          )}
           <ListItem
             title={Locale.Settings.MjKey.Title}
             subTitle={Locale.Settings.MjKey.SubTitle}

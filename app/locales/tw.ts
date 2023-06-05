@@ -141,6 +141,7 @@ const tw: LocaleType = {
 
     MjMode: {
       name: "MJ 快速製圖",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -150,7 +151,7 @@ const tw: LocaleType = {
     },
 
     MJAccessCode: {
-      Title: "存取密碼",
+      Title: "Midjourney 存取密碼",
       SubTitle: "管理員已開啟加密存取",
       Placeholder: "請輸入存取密碼",
     },

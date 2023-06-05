@@ -163,6 +163,7 @@ const en: RequiredLocaleType = {
 
     MjMode: {
       name: "MJ Quick Mapping",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
       fastMode: false,
     },
 
@@ -172,7 +173,7 @@ const en: RequiredLocaleType = {
     },
 
     MJAccessCode: {
-      Title: "Access Code",
+      Title: "Midjourney Access Code",
       SubTitle: "Admin has enabled encrypted access",
       Placeholder: "Please enter the access code",
     },
