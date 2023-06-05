@@ -15,6 +15,7 @@ const tw: LocaleType = {
       ChatList: "查看訊息列表",
       CompressedHistory: "查看壓縮後的歷史 Prompt",
       Export: "匯出聊天紀錄",
+      Open: "開啟",
       Copy: "複製",
       Stop: "停止",
       Retry: "重試",
@@ -125,6 +126,33 @@ const tw: LocaleType = {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可規避授權存取限制",
       Placeholder: "OpenAI API Key",
+    },
+    MjKey: {
+      Title: "MJ API 金鑰",
+      SubTitle: "快速配置 MJ API 金鑰",
+      Placeholder: "Midjourney API 金鑰",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API 網址",
+      SubTitle: "配置 MJ API 網址",
+      Placeholder: "Midjourney API 網址",
+    },
+
+    MjMode: {
+      name: "MJ 快速製圖",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ 代理",
+      Placeholder: "包含 http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "存取密碼",
+      SubTitle: "管理員已開啟加密存取",
+      Placeholder: "請輸入存取密碼",
     },
     Usage: {
       Title: "帳戶餘額",

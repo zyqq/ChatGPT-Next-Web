@@ -44,6 +44,7 @@ import {
   evalCode,
   postMsg,
   handleMsg,
+  openInNewWindow,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -720,6 +721,39 @@ export function Chat() {
     },
   });
 
+  const UPSCALE = (messages: ChatMessage, index: any) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("u" + index);
+    let opMsg = `/mj UPSCALE|${messages.imageId}|${index}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
+  const VARIATION = (messages: ChatMessage, index: any) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("v" + index);
+    let opMsg = `/mj VARIATION|${messages.imageId}|${index}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
+  const RESET = (messages: ChatMessage) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("r");
+    let opMsg = `/mj RESET|${messages.imageId}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header">
@@ -863,32 +897,153 @@ export function Chat() {
                         >
                           {Locale.Chat.Actions.Run}
                         </div>
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => openInNewWindow(message.content)}
+                        >
+                          {Locale.Chat.Actions.Open}
+                        </div>
+                      </div>
+                  )}
+
+                  <Markdown
+                    content={message.content}
+                    loading={
+                      (message.preview || message.content.length === 0) &&
+                      !isUser
+                    }
+                    onContextMenu={(e) => onRightClick(e, message)}
+                    onDoubleClickCapture={() => {
+                      if (!isMobileScreen) return;
+                      setUserInput(message.content);
+                    }}
+                    fontSize={fontSize}
+                    parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
+                  />
+                  </div>
+                </div>
+                {!isUser && !message.preview && (
+                  <div className={styles["chat-message-actions"]}>
+                    <div className={styles["chat-message-action-date"]}>
+                      {message.date.toLocaleString()}
+                    </div>
+                    {message.type && message.type == "imageResult" && (
+                      <div>
+                        <div className={styles["imageResult"]}>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u1")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 1)}
+                          >
+                            U 1
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u2")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 2)}
+                          >
+                            U 2
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u3")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 3)}
+                          >
+                            U 3
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u4")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 4)}
+                          >
+                            U 4
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v1")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 1)}
+                          >
+                            V 1
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v2")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 2)}
+                          >
+                            V 2
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v3")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 3)}
+                          >
+                            V 3
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v4")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 4)}
+                          >
+                            V 4
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("r")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => RESET(message)}
+                          >
+                            Reset
+                          </button>
+                        </div>
                       </div>
                     )}
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
                   </div>
-                  {!isUser && !message.preview && (
-                    <div className={styles["chat-message-actions"]}>
-                      <div className={styles["chat-message-action-date"]}>
-                        {message.date.toLocaleString()}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
             </>

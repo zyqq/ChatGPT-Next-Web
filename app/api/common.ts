@@ -2,12 +2,16 @@ import { NextRequest } from "next/server";
 
 export const OPENAI_URL = "api.openai.com";
 const DEFAULT_PROTOCOL = "https";
+const DEFAULT_MJ_API_URL = "https://api.zxx.im/";
 const PROTOCOL = process.env.PROTOCOL ?? DEFAULT_PROTOCOL;
 const BASE_URL = process.env.BASE_URL ?? OPENAI_URL;
+const MIDJOURNEY_URL = process.env.MIDJOURNEY_API_URL ?? DEFAULT_MJ_API_URL;
+const MIDJOURNEY_IMG_PROXY = process.env.MIDJOURNEY_IMG_PROXY ?? "";
 
 export async function requestOpenai(req: NextRequest) {
   const controller = new AbortController();
   const authValue = req.headers.get("Authorization") ?? "";
+  console.log(">>>> [OpenAI Request] ", req);
   const openaiPath = `${req.nextUrl.pathname}${req.nextUrl.search}`.replaceAll(
     "/api/openai/",
     "",
@@ -63,4 +67,30 @@ export async function requestOpenai(req: NextRequest) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+export async function requestMidJourney(req: NextRequest) {
+  const token = req.headers.get("token") ?? "";
+
+  const reqPath = `${req.nextUrl.pathname}`.replaceAll("/api/midjourney/", "");
+  console.log(">>>> [MidJourney Request] ", reqPath);
+  let proxyUrl = req.nextUrl.searchParams.get("proxyUrl");
+  // 优先界面配置
+  proxyUrl = proxyUrl ? proxyUrl : MIDJOURNEY_IMG_PROXY;
+  const midJourneyAPIPath =
+    `${MIDJOURNEY_URL}` + reqPath + "?proxyUrl=" + proxyUrl;
+  console.log(">>> 画图", midJourneyAPIPath);
+  if (!token) {
+    console.error("[Midjourney Request] invalid api key provided", token);
+  }
+
+  return fetch(midJourneyAPIPath, {
+    headers: {
+      "Content-Type": "application/json",
+      token: token,
+    },
+    cache: "no-store",
+    method: req.method,
+    body: req.body,
+  });
 }

@@ -4,6 +4,7 @@ import md5 from "spark-md5";
 import { ACCESS_CODE_PREFIX } from "../constant";
 import { OPENAI_URL } from "./common";
 
+const serverConfig = getServerSideConfig();
 function getIP(req: NextRequest) {
   let ip = req.ip ?? req.headers.get("x-real-ip");
   const forwardedFor = req.headers.get("x-forwarded-for");
@@ -58,6 +59,30 @@ export function auth(req: NextRequest) {
     }
   } else {
     console.log("[Auth] use user api key");
+  }
+
+  return {
+    error: false,
+  };
+}
+
+export function authMj(req: NextRequest) {
+  console.log("[Auth] allowed hashed codes: ", [...serverConfig.codes]);
+  console.log("[User IP] ", getIP(req));
+  console.log("[Time] ", new Date().toLocaleString());
+
+  // 注入midjourneyAPI
+  const midJourneyKey = req.headers.get("token")
+    ? req.headers.get("token")
+    : serverConfig.midJourneyKey;
+  console.log(">>> 注入midjourneyAPI: ", midJourneyKey);
+  if (midJourneyKey) {
+    req.headers.set("token", midJourneyKey);
+  } else {
+    return {
+      error: true,
+      msg: "Empty Midjourney Api Key. Go to: [MidjourneyAPI](https://midjourneyapi.zxx.im/)",
+    };
   }
 
   return {

@@ -16,6 +16,7 @@ const cs: LocaleType = {
       ChatList: "Přejít na seznam chatů",
       CompressedHistory: "Pokyn z komprimované paměti historie",
       Export: "Exportovat všechny zprávy jako Markdown",
+      Open: "Zobrazit",
       Copy: "Kopírovat",
       Stop: "Zastavit",
       Retry: "Zopakovat",
@@ -72,6 +73,19 @@ const cs: LocaleType = {
     Lang: {
       Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
       All: "Všechny jazyky",
+      Options: {
+        cn: "简体中文",
+        en: "English",
+        tw: "繁體中文",
+        es: "Español",
+        it: "Italiano",
+        tr: "Türkçe",
+        jp: "日本語",
+        de: "Deutsch",
+        vi: "Vietnamese",
+        ru: "Русский",
+        cs: "Čeština",
+      },
     },
     Avatar: "Avatar",
     FontSize: {
@@ -129,6 +143,34 @@ const cs: LocaleType = {
       SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
       Placeholder: "Klíč API OpenAI",
     },
+    MjKey: {
+      Title: "MJ API Klíč",
+      SubTitle: "Rychlé nastavení MJ API Klíče",
+      Placeholder: "MJ API Klíč",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "Nastavení MJ API URL",
+      Placeholder: "MJ API URL",
+    },
+
+    MjMode: {
+      name: "MJ Rychlý režim",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Obsahuje http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Přístupové heslo",
+      SubTitle: "Správce povolil šifrovaný přístup",
+      Placeholder: "Zadejte přístupové heslo",
+    },
+
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {
