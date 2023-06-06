@@ -45,7 +45,7 @@ export const useAccessStore = create<AccessControlStore>()(
       midJourneyKey: "",
       midJourneyAPIURL: "",
       midJourneyAccessCode: "",
-      mjMode: true,
+      mjMode: false,
       proxyUrl: "",
 
       // TODO:midJourneyAccessCode与accessCode共用这个逻辑
