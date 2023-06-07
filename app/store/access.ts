@@ -12,8 +12,19 @@ export interface AccessControlStore {
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
+  midJourneyAPI: string;
+  midJourneyKey: string;
+  midJourneyAPIURL: string;
+  midJourneyAccessCode: string;
+  mjMode: boolean;
+  proxyUrl: string;
 
+  updateMJMode: (_: boolean) => void;
+  updateMJProxyUrl: (_: string) => void;
   updateToken: (_: string) => void;
+  updateMJKey: (_: string) => void;
+  updateMjCode: (_: string) => void;
+  updateAPIURL: (_: string) => void;
   updateCode: (_: string) => void;
   enabledAccessControl: () => boolean;
   isAuthorized: () => boolean;
@@ -30,7 +41,14 @@ export const useAccessStore = create<AccessControlStore>()(
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: "/api/openai/",
+      midJourneyAPI: "/api/midjourney/",
+      midJourneyKey: "",
+      midJourneyAPIURL: "",
+      midJourneyAccessCode: "",
+      mjMode: false,
+      proxyUrl: "",
 
+      // TODO:midJourneyAccessCode与accessCode共用这个逻辑
       enabledAccessControl() {
         get().fetch();
 
@@ -41,6 +59,21 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       updateToken(token: string) {
         set(() => ({ token }));
+      },
+      updateMJKey(midJourneyKey: string) {
+        set(() => ({ midJourneyKey }));
+      },
+      updateAPIURL(midJourneyAPIURL: string) {
+        set(() => ({ midJourneyAPIURL }));
+      },
+      updateMJMode(mjMode: boolean) {
+        set(() => ({ mjMode }));
+      },
+      updateMJProxyUrl(proxyUrl: string) {
+        set(() => ({ proxyUrl }));
+      },
+      updateMjCode(code: string) {
+        set(() => ({ midJourneyAccessCode: code }));
       },
       isAuthorized() {
         get().fetch();

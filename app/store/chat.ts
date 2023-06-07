@@ -1,6 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// import { ChatCompletionResponseMessage } from "openai";
+import {
+  ControllerPool,
+  requestChatStream,
+  requestImage,
+  requestImageResult,
+  requestWithPrompt,
+} from "../requests";
 import { trimTopic } from "../utils";
 
 import Locale from "../locales";
@@ -18,6 +26,10 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id?: number;
   model?: ModelType;
+  taskId?: string;
+  imageId?: string;
+  clickedList?: string[];
+  type?: "chat" | "image" | "imageResult";
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -229,7 +241,9 @@ export const useChatStore = create<ChatStore>()(
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().summarizeSession();
+        if (!message.type || !message.type.includes("image")) {
+          get().summarizeSession();
+        }
       },
 
       async onUserInput(content, finishCb = () => {}) {
@@ -276,60 +290,232 @@ export const useChatStore = create<ChatStore>()(
           session.messages.push(botMessage);
         });
 
+        let res = {
+          success: false,
+          result: {
+            msg: "",
+            taskId: "",
+          },
+          error: "",
+          msg: "",
+          message: "",
+        };
         // make request
         console.log("[User Input] ", sendMessages);
-        api.llm.chat({
-          messages: sendMessages,
-          config: { ...modelConfig, stream: true },
-          onUpdate(message) {
-            botMessage.streaming = true;
-            if (message) {
-              botMessage.content = message;
-            }
-            set(() => ({}));
-          },
-          onFinish(message) {
-            botMessage.streaming = false;
-            if (message) {
-              botMessage.content = message;
-              get().onNewMessage(botMessage);
-            }
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
+        let lastMessage = sendMessages[sendMessages.length - 1];
+        let op = "";
+        if (lastMessage.content.startsWith("/mj")) {
+          console.log(">>> 绘图模式 <<<");
+          // 请求API
+          if (lastMessage.content.startsWith("/mj UPSCALE")) {
+            let ops = lastMessage.content.split("|");
+            op = "UPSCALE";
+            res = await requestImage(
+              "UPSCALE",
+              true,
+              undefined,
+              Number(ops[2]),
+              ops[1],
             );
-            set(() => ({}));
-            finishCb()
-          },
-          onError(error) {
-            const isAborted = error.message.includes("aborted");
-            botMessage.content =
-              "\n\n" +
-              prettyObject({
-                error: true,
-                message: error.message,
-              });
-            botMessage.streaming = false;
-            userMessage.isError = !isAborted;
-            botMessage.isError = !isAborted;
+          } else if (lastMessage.content.startsWith("/mj VARIATION")) {
+            let ops = lastMessage.content.split("|");
+            op = "VARIATION";
+            res = await requestImage(
+              "VARIATION",
+              true,
+              undefined,
+              Number(ops[2]),
+              ops[1],
+            );
+          } else if (lastMessage.content.startsWith("/mj RESET")) {
+            let ops = lastMessage.content.split("|");
+            op = "RESET";
+            res = await requestImage(
+              "RESET",
+              true,
+              undefined,
+              undefined,
+              ops[1],
+            );
+          } else {
+            res = await requestImage(
+              "CREATE_IMAGE",
+              true,
+              lastMessage.content,
+              undefined,
+              undefined,
+            );
+          }
 
-            set(() => ({}));
-            ChatControllerPool.remove(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-            );
+          let hisMsg = new Array();
+          console.log(">>> 绘图结果：", res);
+          get().updateCurrentSession((session) => {
+            botMessage.streaming = false;
+            botMessage.type = "image";
+          });
+          if (res.success) {
+            hisMsg.push(res.result.msg);
+            botMessage.taskId = res.result.taskId;
+            let status = 0;
+            // 起一个定时器每5秒请求一次直到返回状态大于2
+            let timer = setInterval(async () => {
+              let response = await requestImageResult(res.result.taskId);
+              console.log(">>> 正在绘图：", response);
+              if (response.success) {
+                if (status == 0 || status !== response.result.status) {
+                  hisMsg.push(response.result.msg);
+                  let hisMsgGether = "";
+                  if (hisMsg.length > 1) {
+                    // 除了最后一次全部加 ～～～～
+                    for (var i = 0; i < hisMsg.length - 1; i++) {
+                      hisMsgGether += "~~" + hisMsg[i] + "~~" + "\n";
+                    }
+                    hisMsgGether += hisMsg[hisMsg.length - 1];
+                  } else {
+                    hisMsgGether = hisMsg[0];
+                  }
+                  botMessage.content = hisMsgGether;
+                  status = response.result.status;
+                  get().updateCurrentSession((session) => {
+                    botMessage.streaming = false;
+                  });
+                }
+                // 删除定时器
+                if (response.result.status === 2) {
+                  clearInterval(timer);
+                  // 发图片 ![](图片链接)
+                  const imgMsg: ChatMessage = createMessage({
+                    role: "assistant",
+                    streaming: true,
+                    id: userMessage.id! + 1,
+                    model: modelConfig.model,
+                    type: op == "UPSCALE" ? "image" : "imageResult",
+                    clickedList: [],
+                  });
+                  const sessionIndex = get().currentSessionIndex;
+                  const messageIndex =
+                    get().currentSession().messages.length + 1;
+                  get().updateCurrentSession((session) => {
+                    session.messages.push(imgMsg);
+                    imgMsg.content = `![${response.result.prompt}](${response.result.imageUrl})`;
+                    imgMsg.imageId = response.result.imageId;
+                    imgMsg.streaming = false;
+                  });
+                  get().onNewMessage(botMessage);
+                  ControllerPool.remove(
+                    sessionIndex,
+                    imgMsg.id ?? messageIndex,
+                  );
+                } else if (response.result.status > 2) {
+                  clearInterval(timer);
+                }
+              }
+            }, 5000);
+          } else if (res.error) {
+            botMessage.content = res.msg;
+          } else {
+            botMessage.content = res.message;
+          }
 
-            console.error("[Chat] failed ", error);
-          },
-          onController(controller) {
-            // collect controller for stop/retry
-            ChatControllerPool.addController(
-              sessionIndex,
-              botMessage.id ?? messageIndex,
-              controller,
-            );
-          },
-        });
+          get().onNewMessage(botMessage);
+          ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
+        } else {
+          api.llm.chat({
+            messages: sendMessages,
+            config: { ...modelConfig, stream: true },
+            onUpdate(message) {
+              botMessage.streaming = true;
+              if (message) {
+                botMessage.content = message;
+              }
+              set(() => ({}));
+            },
+            onFinish(message) {
+              botMessage.streaming = false;
+              if (message) {
+                botMessage.content = message;
+                get().onNewMessage(botMessage);
+              }
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+              set(() => ({}));
+              finishCb()
+            },
+            onError(error) {
+              const isAborted = error.message.includes("aborted");
+              botMessage.content =
+                "\n\n" +
+                prettyObject({
+                  error: true,
+                  message: error.message,
+                });
+              botMessage.streaming = false;
+              userMessage.isError = !isAborted;
+              botMessage.isError = !isAborted;
+
+              set(() => ({}));
+              ChatControllerPool.remove(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+              );
+
+              console.error("[Chat] failed ", error);
+            },
+            onController(controller) {
+              // collect controller for stop/retry
+              ChatControllerPool.addController(
+                sessionIndex,
+                botMessage.id ?? messageIndex,
+                controller,
+              );
+            },
+          });
+          // requestChatStream(sendMessages, {
+          //   onMessage(content, done) {
+          //     // stream response
+          //     if (done) {
+          //       botMessage.streaming = false;
+          //       botMessage.content = content;
+          //       get().onNewMessage(botMessage);
+          //       ControllerPool.remove(
+          //         sessionIndex,
+          //         botMessage.id ?? messageIndex,
+          //       );
+          //     } else {
+          //       botMessage.content = content;
+          //       set(() => ({}));
+          //     }
+          //   },
+          //   onError(error, statusCode) {
+          //     const isAborted = error.message.includes("aborted");
+          //     if (statusCode === 401) {
+          //       botMessage.content = Locale.Error.Unauthorized;
+          //     } else if (!isAborted) {
+          //       botMessage.content += "\n\n" + Locale.Store.Error;
+          //     }
+          //     botMessage.streaming = false;
+          //     userMessage.isError = !isAborted;
+          //     botMessage.isError = !isAborted;
+
+          //     set(() => ({}));
+          //     ControllerPool.remove(
+          //       sessionIndex,
+          //       botMessage.id ?? messageIndex,
+          //     );
+          //   },
+          //   onController(controller) {
+          //     // collect controller for stop/retry
+          //     ControllerPool.addController(
+          //       sessionIndex,
+          //       botMessage.id ?? messageIndex,
+          //       controller,
+          //     );
+          //   },
+          //   modelConfig: { ...modelConfig },
+          // });
+        }
       },
 
       getMemoryPrompt() {
@@ -430,25 +616,42 @@ export const useChatStore = create<ChatStore>()(
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
         ) {
-          const topicMessages = messages.concat(
+          if (
+            session.messages[session.messages.length - 1].content.startsWith(
+              "/mj",
+            )
+          ) {
+            console.log(">>> 绘图模式 <<<");
+            return;
+          } else {
+            const topicMessages = messages.concat(
             createMessage({
-              role: "user",
-              content: Locale.Store.Prompt.Topic,
-            }),
-          );
-          api.llm.chat({
-            messages: topicMessages,
-            config: {
-              model: "gpt-3.5-turbo",
-            },
-            onFinish(message) {
-              get().updateCurrentSession(
-                (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
-              );
-            },
-          });
+                role: "user",
+                content: Locale.Store.Prompt.Topic,
+              }),
+            );
+            api.llm.chat({
+              messages: topicMessages,
+              config: {
+                model: "gpt-3.5-turbo",
+              },
+              onFinish(message) {
+                get().updateCurrentSession(
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
+              },
+            });
+            // requestWithPrompt(session.messages, Locale.Store.Prompt.Topic, {
+            //   model: "gpt-3.5-turbo",
+            // }).then((res) => {
+            //   get().updateCurrentSession(
+            //     (session) =>
+            //       (session.topic = res ? trimTopic(res) : DEFAULT_TOPIC),
+            //   );
+            // });
+          }
         }
 
         const modelConfig = session.mask.modelConfig;

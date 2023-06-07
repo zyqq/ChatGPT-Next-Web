@@ -4,7 +4,14 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized:
-      "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。",
+      "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",
+  },
+  Auth: {
+    Title: "需要密码",
+    Tips: "管理员开启了密码验证，请在下方填入访问码",
+    Input: "在此处填写访问码",
+    Confirm: "确认",
+    Later: "稍后再说",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -15,6 +22,7 @@ const cn = {
       ChatList: "查看消息列表",
       CompressedHistory: "查看压缩后的历史 Prompt",
       Export: "导出聊天记录",
+      Open: "查看",
       Copy: "复制",
       Stop: "停止",
       Retry: "重试",
@@ -145,6 +153,35 @@ const cn = {
       Title: "API Key",
       SubTitle: "使用自己的 Key 可绕过密码访问限制",
       Placeholder: "OpenAI API Key",
+    },
+
+    MjKey: {
+      Title: "MJ API Key",
+      SubTitle: "配置后再在聊天框输入/mj+提示词",
+      Placeholder: "Midjourney API Key",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "配置MJ API URL",
+      Placeholder: "Midjourney API URL",
+    },
+
+    MjMode: {
+      name: "MJ 快速制图",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ 反向代理",
+      Placeholder: "包含http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney 访问密码",
+      SubTitle: "管理员已开启加密访问",
+      Placeholder: "请输入访问密码",
     },
 
     Usage: {

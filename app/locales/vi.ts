@@ -16,6 +16,7 @@ const vi: LocaleType = {
       ChatList: "Xem danh sách chat",
       CompressedHistory: "Nén tin nhắn trong quá khứ",
       Export: "Xuất tất cả tin nhắn dưới dạng Markdown",
+      Open: "Mở",
       Copy: "Sao chép",
       Stop: "Dừng",
       Retry: "Thử lại",
@@ -127,6 +128,34 @@ const vi: LocaleType = {
       Title: "API Key",
       SubTitle: "Sử dụng khóa của bạn để bỏ qua giới hạn mã truy cập",
       Placeholder: "OpenAI API Key",
+    },
+    MjKey: {
+      Title: "Khóa API MJ",
+      SubTitle: "Cấu hình nhanh Khóa API MJ",
+      Placeholder: "Khóa API Midjourney",
+    },
+
+    MjApiUrl: {
+      Title: "URL API MJ",
+      SubTitle: "Cấu hình URL API MJ",
+      Placeholder: "URL API Midjourney",
+    },
+
+    MjMode: {
+      name: "Chế độ Nhanh MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Chứa http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney Mã Truy cập",
+      SubTitle: "Quản trị viên đã bật chế độ truy cập mã hóa",
+      Placeholder: "Vui lòng nhập mã truy cập",
     },
     Usage: {
       Title: "Hạn mức tài khoản",

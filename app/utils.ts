@@ -68,6 +68,14 @@ export function evalCode(text: string, key: number) {
   }
 }
 
+export async function openInNewWindow(text: string) {
+  var url = /\((.*?)\)/.exec(text);
+  const win = window.open(url ? url[1] : "", "_blank");
+  if (win) {
+    win.focus();
+  }
+}
+
 export function downloadAs(text: string, filename: string) {
   const element = document.createElement("a");
   element.setAttribute(
