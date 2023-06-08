@@ -929,7 +929,7 @@ export function Chat() {
                       {message.date.toLocaleString()}
                     </div>
                     {message.type && message.type == "imageResult" && (
-                      <div>
+                      <div className="flex-1">
                         <div className={styles["imageResult"]}>
                           <button
                             className={
@@ -1028,12 +1028,11 @@ export function Chat() {
                             V 4
                           </button>
                           <button
-                            className={
-                              message.clickedList
+                            className={styles["imageResetBtn"] + ` ${message.clickedList
                                 ? message.clickedList.includes("r")
                                   ? styles["imageResultBntClick"]
                                   : styles["imageResultBnt"]
-                                : ""
+                                : ""}`
                             }
                             onClick={() => RESET(message)}
                           >
