@@ -564,7 +564,7 @@ export function Chat() {
                 // });
               },
               (msg: any) => {
-                console.log("get", msg);
+                // console.log("get", msg);
                 postMsg({
                   type,
                   content: msg,
@@ -575,7 +575,7 @@ export function Chat() {
 
           // 整个网页内容操作
           if(event.data.type === "read") {
-            console.log('event.data', event.data.data.content);
+            // console.log('event.data', event.data.data.content);
             doSubmit(`${event.data.data.content.join('')}。
             请总结以上文本内容`)
             // doSubmit('请总结以下文本内容，我将分为几段发送：')
