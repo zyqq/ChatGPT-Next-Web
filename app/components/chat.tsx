@@ -550,11 +550,27 @@ export function Chat() {
             chatStore.newSession();
             chatStore.selectSession(0);
             navigate(Path.Chat);
-            chatStore.onUserInput(event.data.data.content, () => {
-              const currentSession = chatStore.currentSession();
-              console.log('currentSession', chatStore)
-              postMsg({type, content: currentSession.messages[currentSession.messages.length -1].content})
-            })
+            const currentSession = chatStore.currentSession();
+            chatStore.onUserInput(
+              event.data.data.content,
+              () => {
+                // const currentSession = chatStore.currentSession();
+                // console.log("currentSession", chatStore);
+                // postMsg({
+                //   type,
+                //   content:
+                //     currentSession.messages[currentSession.messages.length - 1]
+                //       .content,
+                // });
+              },
+              (msg: any) => {
+                console.log("get", msg);
+                postMsg({
+                  type,
+                  content: msg,
+                });
+              },
+            );
           }
 
           // 整个网页内容操作

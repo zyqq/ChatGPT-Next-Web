@@ -97,7 +97,7 @@ interface ChatStore {
   deleteSession: (index: number) => void;
   currentSession: () => ChatSession;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string, cb?: Function) => Promise<void>;
+  onUserInput: (content: string, finishCb?: Function, updateCb?: Function) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -246,7 +246,7 @@ export const useChatStore = create<ChatStore>()(
         }
       },
 
-      async onUserInput(content, finishCb = () => {}) {
+      async onUserInput(content, finishCb = () => {}, updateCb=(msg: any) =>{}) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -427,6 +427,7 @@ export const useChatStore = create<ChatStore>()(
               botMessage.streaming = true;
               if (message) {
                 botMessage.content = message;
+                updateCb(message);
               }
               set(() => ({}));
             },
