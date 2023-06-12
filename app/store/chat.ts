@@ -436,6 +436,7 @@ export const useChatStore = create<ChatStore>()(
               if (message) {
                 botMessage.content = message;
                 get().onNewMessage(botMessage);
+                message.includes('Rate limit') && updateCb('请求过于频繁，请稍等几秒');
               }
               ChatControllerPool.remove(
                 sessionIndex,
@@ -443,6 +444,7 @@ export const useChatStore = create<ChatStore>()(
               );
               set(() => ({}));
               finishCb()
+              console.error("[Chat] onFinish ", message);
             },
             onError(error) {
               const isAborted = error.message.includes("aborted");
@@ -461,7 +463,7 @@ export const useChatStore = create<ChatStore>()(
                 sessionIndex,
                 botMessage.id ?? messageIndex,
               );
-
+              updateCb(error);
               console.error("[Chat] failed ", error);
             },
             onController(controller) {
