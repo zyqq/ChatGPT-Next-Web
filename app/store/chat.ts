@@ -444,7 +444,6 @@ export const useChatStore = create<ChatStore>()(
               );
               set(() => ({}));
               finishCb()
-              console.error("[Chat] onFinish ", message);
             },
             onError(error) {
               const isAborted = error.message.includes("aborted");
