@@ -5,7 +5,7 @@ const en: RequiredLocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in [auth](/#/auth) page.",
+      "Unauthorized access, please enter access code in [auth](/#/auth) page.Alternatively, you can enter your own OpenAI API key on the [Settings page](/#/settings) or follow our WeChat official account '秋博士' to get the access password.\n![秋博士](https://i.postimg.cc/dtWjSGDN/me.jpg)",
   },
   Auth: {
     Title: "Need Access Code",

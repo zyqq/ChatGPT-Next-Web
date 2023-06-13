@@ -97,7 +97,7 @@ export function authMj(req: NextRequest) {
   if (serverConfig.needCode && !serverConfig.mjCodes.has(hashedCode) && !midJourneyKey) {
     return {
       error: true,
-      msg: "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的 MidJourney 访问密码，或者填入你自己的 [Midjourney API Token](https://midjourneyapi.zxx.im/)。",
+      msg: "访问密码不正确或为空，请前往[设置](/#/settings)页输入正确的 MidJourney 访问密码，或者填入你自己的 [Midjourney API Token](https://midjourneyapi.zxx.im/)。或者关注微信公众号获取访问密码: 秋博士 \n![秋博士](https://i.postimg.cc/dtWjSGDN/me.jpg)",
     };
   }
   // if user does not provide an api key, inject system api key
