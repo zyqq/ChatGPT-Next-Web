@@ -29,6 +29,19 @@ const cn = {
       Delete: "删除",
       Run: "运行代码",
     },
+    InputActions: {
+      Stop: "停止响应",
+      ToBottom: "滚到最新",
+      Theme: {
+        auto: "自动主题",
+        light: "亮色模式",
+        dark: "深色模式",
+      },
+      Prompt: "快捷指令",
+      Masks: "所有面具",
+      Clear: "清除聊天",
+      Settings: "对话设置",
+    },
     Rename: "重命名对话",
     Typing: "正在输入…",
     Input: (submitKey: string) => {
@@ -197,6 +210,10 @@ const cn = {
       Title: "访问密码",
       SubTitle: "管理员已开启加密访问",
       Placeholder: "请输入访问密码",
+    },
+    Endpoint: {
+      Title: "接口地址",
+      SubTitle: "除默认地址外，必须包含 http(s)://",
     },
     Model: "模型 (model)",
     Temperature: {
