@@ -203,6 +203,10 @@ export function SideBar(props: { className?: string }) {
         </div>
       </div>
 
+      <div className={styles["sidebar-tips"]}>
+        <a target="_blank" href="https://zyqq.github.io/chatgpt-web/docs/index.html">免责声明</a>
+      </div>
+
       <div
         className={styles["sidebar-drag"]}
         onMouseDown={(e) => onDragMouseDown(e as any)}

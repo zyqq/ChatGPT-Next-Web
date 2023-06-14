@@ -316,6 +316,18 @@
   padding-top: 20px;
 }
 
+.sidebar-tips {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 10px;
+  font-size: 12px;
+
+  a {
+    text-decoration: unset;
+    color: var(--black);
+  }
+}
+
 .sidebar-actions {
   display: inline-flex;
 }
