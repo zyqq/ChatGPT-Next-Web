@@ -143,6 +143,11 @@
   font-size: 12px;
   font-weight: 400;
   animation: slide-in ease 0.3s;
+
+  a {
+    text-decoration: unset;
+    color: var(--black);
+  }
 }
 
 .sidebar-body {
@@ -314,18 +319,6 @@
   display: flex;
   justify-content: space-between;
   padding-top: 20px;
-}
-
-.sidebar-tips {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 10px;
-  font-size: 12px;
-
-  a {
-    text-decoration: unset;
-    color: var(--black);
-  }
 }
 
 .sidebar-actions {
