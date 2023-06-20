@@ -16,10 +16,12 @@ const it: PartialLocaleType = {
       ChatList: "Vai alla Chat List",
       CompressedHistory: "Prompt di memoria della cronologia compressa",
       Export: "Esportazione di tutti i messaggi come Markdown",
+      Open: "Apri",
       Copy: "Copia",
       Stop: "Stop",
       Retry: "Riprova",
       Delete: "Delete",
+      Run: "Run Code",
     },
     Rename: "Rinomina Chat",
     Typing: "Typing…",
@@ -128,6 +130,34 @@ const it: PartialLocaleType = {
       SubTitle:
         "Utilizzare la chiave per ignorare il limite del codice di accesso",
       Placeholder: "OpenAI API Key",
+    },
+    MjKey: {
+      Title: "Chiave API di MJ",
+      SubTitle: "Configurazione rapida della chiave API di MJ",
+      Placeholder: "Chiave API di Midjourney",
+    },
+
+    MjApiUrl: {
+      Title: "URL API di MJ",
+      SubTitle: "Configurazione dell'URL API di MJ",
+      Placeholder: "URL API di Midjourney",
+    },
+
+    MjMode: {
+      name: "Modalità rapida di MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Contiene http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney Codice di accesso",
+      SubTitle: "L'amministratore ha abilitato l'accesso crittografato",
+      Placeholder: "Inserisci il codice di accesso",
     },
     Usage: {
       Title: "Bilancio Account",

@@ -143,6 +143,11 @@
   font-size: 12px;
   font-weight: 400;
   animation: slide-in ease 0.3s;
+
+  a {
+    text-decoration: unset;
+    color: var(--black);
+  }
 }
 
 .sidebar-body {
@@ -192,12 +197,12 @@
   cursor: pointer;
 }
 
-.chat-item:hover > .chat-item-delete {
+.chat-item:hover>.chat-item-delete {
   opacity: 0.5;
   transform: translateX(-10px);
 }
 
-.chat-item:hover > .chat-item-delete:hover {
+.chat-item:hover>.chat-item-delete:hover {
   opacity: 1;
 }
 
@@ -218,10 +223,12 @@
 }
 
 .narrow-sidebar {
+
   .sidebar-title,
   .sidebar-sub-title {
     display: none;
   }
+
   .sidebar-logo {
     position: relative;
     display: flex;
@@ -287,7 +294,7 @@
     top: 15px;
   }
 
-  .chat-item:hover > .chat-item-delete {
+  .chat-item:hover>.chat-item-delete {
     opacity: 0.5;
     right: 5px;
   }
@@ -348,7 +355,7 @@
 
 .chat-message {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 
   &:last-child {
     animation: slide-in ease 0.3s;
@@ -375,7 +382,7 @@
   }
 }
 
-.chat-message-user > .chat-message-container {
+.chat-message-user>.chat-message-container {
   align-items: flex-end;
 }
 
@@ -434,7 +441,7 @@
   }
 }
 
-.chat-message-user > .chat-message-container > .chat-message-item {
+.chat-message-user>.chat-message-container>.chat-message-item {
   background-color: var(--second);
 }
 
@@ -504,6 +511,7 @@
 
       @include single-line();
     }
+
     .hint-content {
       font-size: 12px;
 
@@ -566,4 +574,55 @@
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+
+.imageResult {
+  // margin-left: 10px;
+  max-width: 350px;
+}
+
+@media (min-width: 600px) {
+  .imageResult {
+    // margin-left: 10px;
+    max-width: 350px;
+  }
+}
+
+.imageResultBnt {
+  width: 62px;
+  color: #ffffff;
+  background-color: #4d5057;
+  margin-left: 10px;
+  margin-right: 5px;
+  margin-top: 2px;
+  //border-radius: 5px;
+
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.imageResultBntClick {
+  color: #ffffff;
+  background-color: #5764f2;
+  margin-left: 10px;
+  margin-right: 5px;
+  margin-top: 2px;
+  //border-radius: 5px;
+
+  padding: 10px 20px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.imageResetBtn {
+  width: max-content;
 }

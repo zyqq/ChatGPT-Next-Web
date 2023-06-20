@@ -16,10 +16,12 @@ const ru: PartialLocaleType = {
       ChatList: "Перейти к списку чатов",
       CompressedHistory: "Сжатая история памяти",
       Export: "Экспортировать все сообщения в формате Markdown",
+      Open: "Открыть",
       Copy: "Копировать",
       Stop: "Остановить",
       Retry: "Повторить",
       Delete: "Удалить",
+      Run: "Run Code",
     },
     Rename: "Переименовать чат",
     Typing: "Печатает…",
@@ -128,6 +130,34 @@ const ru: PartialLocaleType = {
       Title: "API ключ",
       SubTitle: "Используйте свой ключ, чтобы игнорировать лимит доступа",
       Placeholder: "API ключ OpenAI",
+    },
+    MjKey: {
+      Title: "Ключ API MJ",
+      SubTitle: "Быстрая настройка ключа API MJ",
+      Placeholder: "Ключ API Midjourney",
+    },
+
+    MjApiUrl: {
+      Title: "URL API MJ",
+      SubTitle: "Настройка URL API MJ",
+      Placeholder: "URL API Midjourney",
+    },
+
+    MjMode: {
+      name: "Быстрый режим MJ",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Прокси",
+      Placeholder: "Содержит http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney Код доступа",
+      SubTitle: "Администратор активировал зашифрованный доступ",
+      Placeholder: "Введите код доступа",
     },
     Usage: {
       Title: "Баланс аккаунта",

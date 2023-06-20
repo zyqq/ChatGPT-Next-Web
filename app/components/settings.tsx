@@ -563,6 +563,58 @@ export function Settings() {
         </List>
 
         <List>
+          {enabledAccessControl ? (
+            <ListItem
+              title={Locale.Settings.MJAccessCode.Title}
+              subTitle={Locale.Settings.MJAccessCode.SubTitle}
+            >
+              <PasswordInput
+                value={accessStore.midJourneyAccessCode}
+                type="text"
+                placeholder={Locale.Settings.MJAccessCode.Placeholder}
+                onChange={(e) => {
+                  accessStore.updateMjCode(e.currentTarget.value);
+                }}
+              />
+            </ListItem>
+          ) : (
+            <></>
+          )}
+          <ListItem
+            title={Locale.Settings.MjKey.Title}
+            subTitle={Locale.Settings.MjKey.SubTitle}
+          >
+            <PasswordInput
+              value={accessStore.midJourneyKey}
+              type="text"
+              placeholder={Locale.Settings.MjKey.Placeholder}
+              onChange={(e) => {
+                accessStore.updateMJKey(e.currentTarget.value);
+              }}
+            />
+          </ListItem>
+          <ListItem title={Locale.Settings.MjMode.name}>
+            <input
+              type="checkbox"
+              checked={accessStore.mjMode}
+              onChange={(e) =>
+                accessStore.updateMJMode(e.currentTarget.checked)
+              }
+            ></input>
+          </ListItem>
+          <ListItem title={Locale.Settings.MjProxyUrl.name}>
+            <input
+              type="input"
+              value={accessStore.proxyUrl}
+              placeholder={Locale.Settings.MjProxyUrl.Placeholder}
+              onChange={(e) =>
+                accessStore.updateMJProxyUrl(e.currentTarget.value)
+              }
+            ></input>
+          </ListItem>
+        </List>
+
+        <List>
           <ListItem
             title={Locale.Settings.Prompt.Disable.Title}
             subTitle={Locale.Settings.Prompt.Disable.SubTitle}

@@ -21,6 +21,7 @@ import MinIcon from "../icons/min.svg";
 import ResetIcon from "../icons/reload.svg";
 import BreakIcon from "../icons/break.svg";
 import SettingsIcon from "../icons/chat-settings.svg";
+import ReadIcon from "../icons/read.svg";
 
 import LightIcon from "../icons/light.svg";
 import DarkIcon from "../icons/dark.svg";
@@ -46,6 +47,10 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  evalCode,
+  postMsg,
+  handleMsg,
+  openInNewWindow,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -453,6 +458,12 @@ export function ChatActions(props: {
           });
         }}
       />
+      <div
+        onClick={() => postMsg({ type: 'read' })}
+        className={`${chatStyle["chat-input-action"]} clickable`}
+      >
+        <ReadIcon />
+      </div>
     </div>
   );
 }
@@ -582,6 +593,64 @@ export function Chat() {
         session.mask.modelConfig = { ...config.modelConfig };
       }
     });
+    postMsg({type: 'ready'})
+
+    // 监听油猴插件消息事件
+    window.addEventListener('message', event => {
+      // 在这里处理来自外部窗口的消息
+      if(event.data.origin && event.data.origin === 'parent') {
+          console.log('parent', event.data, event);
+          const createSession = (type: string) => {
+            chatStore.newSession();
+            chatStore.selectSession(0);
+            navigate(Path.Chat);
+            const currentSession = chatStore.currentSession();
+            chatStore.onUserInput(
+              event.data.data.content,
+              () => {
+                // const currentSession = chatStore.currentSession();
+                // console.log("currentSession", chatStore);
+                // postMsg({
+                //   type,
+                //   content:
+                //     currentSession.messages[currentSession.messages.length - 1]
+                //       .content,
+                // });
+              },
+              (msg: any) => {
+                // console.log("get", msg);
+                postMsg({
+                  type,
+                  content: msg,
+                });
+              },
+            );
+          }
+
+          // 整个网页内容操作
+          if(event.data.type === "read") {
+            // console.log('event.data', event.data.data.content);
+            doSubmit(`${event.data.data.content.join('')}。
+            请总结以上文本内容`)
+            // doSubmit('请总结以下文本内容，我将分为几段发送：')
+            // event.data.data.content.forEach((item: string, index: number) => {
+            //   doSubmit(`第${index+1}段内容为: ${item}`)
+            // })
+          }
+          // chatgpt 增强搜索
+          if(event.data.type === "search") {
+            createSession(event.data.type)
+          }
+          // chatgpt 选中文本
+          if(event.data.type === 'selectText') {
+            createSession(event.data.type)
+          }
+          // chatgpt 选中文本
+          if(event.data.type === 'clickElement') {
+            // setUserInput(event.data.data.content);
+          }
+      }
+    }, false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -726,6 +795,39 @@ export function Chat() {
     },
   });
 
+  const UPSCALE = (messages: ChatMessage, index: any) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("u" + index);
+    let opMsg = `/mj UPSCALE|${messages.imageId}|${index}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
+  const VARIATION = (messages: ChatMessage, index: any) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("v" + index);
+    let opMsg = `/mj VARIATION|${messages.imageId}|${index}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
+  const RESET = (messages: ChatMessage) => {
+    setIsLoading(true);
+    if (!messages.clickedList) {
+      messages.clickedList = [];
+    }
+    messages.clickedList.push("r");
+    let opMsg = `/mj RESET|${messages.imageId}`;
+    chatStore.onUserInput(opMsg).then(() => setIsLoading(false));
+    scrollToBottom();
+  };
+
   return (
     <div className={styles.chat} key={session.id}>
       <div className="window-header" data-tauri-drag-region>
@@ -863,32 +965,158 @@ export function Chat() {
                         >
                           {Locale.Chat.Actions.Copy}
                         </div>
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => evalCode(message.content, message.id ?? i)}
+                        >
+                          {Locale.Chat.Actions.Run}
+                        </div>
+                        <div
+                          className={styles["chat-message-top-action"]}
+                          onClick={() => openInNewWindow(message.content)}
+                        >
+                          {Locale.Chat.Actions.Open}
+                        </div>
+                      </div>
+                  )}
+
+                  <Markdown
+                    content={message.content}
+                    loading={
+                      (message.preview || message.content.length === 0) &&
+                      !isUser
+                    }
+                    onContextMenu={(e) => onRightClick(e, message)}
+                    onDoubleClickCapture={() => {
+                      if (!isMobileScreen) return;
+                      setUserInput(message.content);
+                    }}
+                    fontSize={fontSize}
+                    parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
+                  />
+                  </div>
+                </div>
+                {!isUser && !message.preview && (
+                  <div className={styles["chat-message-actions"]}>
+                    <div className={styles["chat-message-action-date"]}>
+                      {message.date.toLocaleString()}
+                    </div>
+                    {message.type && message.type == "imageResult" && (
+                      <div className="flex-1">
+                        <div className={styles["imageResult"]}>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u1")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 1)}
+                          >
+                            U 1
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u2")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 2)}
+                          >
+                            U 2
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u3")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 3)}
+                          >
+                            U 3
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("u4")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => UPSCALE(message, 4)}
+                          >
+                            U 4
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v1")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 1)}
+                          >
+                            V 1
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v2")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 2)}
+                          >
+                            V 2
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v3")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 3)}
+                          >
+                            V 3
+                          </button>
+                          <button
+                            className={
+                              message.clickedList
+                                ? message.clickedList.includes("v4")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""
+                            }
+                            onClick={() => VARIATION(message, 4)}
+                          >
+                            V 4
+                          </button>
+                          <button
+                            className={styles["imageResetBtn"] + ` ${message.clickedList
+                                ? message.clickedList.includes("r")
+                                  ? styles["imageResultBntClick"]
+                                  : styles["imageResultBnt"]
+                                : ""}`
+                            }
+                            onClick={() => RESET(message)}
+                          >
+                            Reset
+                          </button>
+                        </div>
                       </div>
                     )}
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
                   </div>
-                  {!isUser && !message.preview && (
-                    <div className={styles["chat-message-actions"]}>
-                      <div className={styles["chat-message-action-date"]}>
-                        {message.date.toLocaleString()}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                )}
               </div>
               {shouldShowClearContextDivider && <ClearContextDivider />}
             </>

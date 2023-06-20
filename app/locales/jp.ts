@@ -16,10 +16,12 @@ const jp: PartialLocaleType = {
       ChatList: "メッセージリストを表示",
       CompressedHistory: "圧縮された履歴プロンプトを表示",
       Export: "チャット履歴をエクスポート",
+      Open: "表示する",
       Copy: "コピー",
       Stop: "停止",
       Retry: "リトライ",
       Delete: "削除",
+      Run: "Run Code",
     },
     Rename: "チャットの名前を変更",
     Typing: "入力中…",
@@ -129,6 +131,34 @@ const jp: PartialLocaleType = {
       Title: "APIキー",
       SubTitle: "自分のキーを使用してパスワードアクセス制限を迂回する",
       Placeholder: "OpenAI APIキー",
+    },
+    MjKey: {
+      Title: "MJ APIキー",
+      SubTitle: "MJ APIキーのクイック設定",
+      Placeholder: "Midjourney APIキー",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "MJ API URLの設定",
+      Placeholder: "Midjourney API URL",
+    },
+
+    MjMode: {
+      name: "MJクイックモード",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ プロキシ",
+      Placeholder: "http(s)//を含む",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney アクセスコード",
+      SubTitle: "管理者によって暗号化アクセスが有効化されています",
+      Placeholder: "アクセスコードを入力してください",
     },
     Usage: {
       Title: "残高照会",
