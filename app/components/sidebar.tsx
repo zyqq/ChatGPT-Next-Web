@@ -120,8 +120,10 @@ export function SideBar(props: { className?: string }) {
         shouldNarrow && styles["narrow-sidebar"]
       }`}
     >
-      <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT-AI助手</div>
+      <div className={styles["sidebar-header"]} data-tauri-drag-region>
+        <div className={styles["sidebar-title"]} data-tauri-drag-region>
+          ChatGPT Next
+        </div>
         <div className={styles["sidebar-sub-title"]}>
           <a target="_blank" href="https://zyqq.github.io/chatgpt-web/">免责声明，</a>
           微信公众号获取访问密码：秋博士
