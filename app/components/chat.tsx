@@ -1036,6 +1036,21 @@ export function Chat() {
                     </div>
                   )}
                   <div className={styles["chat-message-item"]}>
+                    <Markdown
+                      content={message.content}
+                      loading={
+                        (message.preview || message.content.length === 0) &&
+                        !isUser
+                      }
+                      onContextMenu={(e) => onRightClick(e, message)}
+                      onDoubleClickCapture={() => {
+                        if (!isMobileScreen) return;
+                        setUserInput(message.content);
+                      }}
+                      fontSize={fontSize}
+                      parentRef={scrollRef}
+                      defaultShow={i >= messages.length - 10}
+                    />
                     {showActions && (
                       <div className={styles["chat-message-actions"]}>
                         <div
@@ -1075,50 +1090,31 @@ export function Chat() {
                                 icon={<CopyIcon />}
                                 onClick={() => copyToClipboard(message.content)}
                               />
-                              <div
-                                className={styles["chat-message-top-action"]}
-                                onClick={() => evalCode(message.content, message.id ?? i)}
-                              >
-                                {Locale.Chat.Actions.Run}
-                              </div>
-                              <div
-                                className={styles["chat-message-top-action"]}
+                              <ChatAction
+                                text={Locale.Chat.Actions.Run}
+                                icon={<PromptIcon />}
+                                onClick={() =>
+                                  evalCode(message.content, message.id ?? i)
+                                }
+                              />
+                              <ChatAction
+                                text={Locale.Chat.Actions.Open}
+                                icon={<AutoIcon />}
                                 onClick={() => openInNewWindow(message.content)}
-                              >
-                                {Locale.Chat.Actions.Open}
-                              </div>
+                              />
                             </>
                           )}
-                        </div>
 
-                        <div className={styles["chat-message-action-date"]}>
-                          {message.date.toLocaleString()}
+                          <div className={styles["chat-message-action-date"]}>
+                            {message.date.toLocaleString()}
+                          </div>
                         </div>
                       </div>
                     )}
-
-                    <Markdown
-                      content={message.content}
-                      loading={
-                        (message.preview || message.content.length === 0) &&
-                        !isUser
-                      }
-                      onContextMenu={(e) => onRightClick(e, message)}
-                      onDoubleClickCapture={() => {
-                        if (!isMobileScreen) return;
-                        setUserInput(message.content);
-                      }}
-                      fontSize={fontSize}
-                      parentRef={scrollRef}
-                      defaultShow={i >= messages.length - 10}
-                    />
                   </div>
                 </div>
                 {!isUser && !message.preview && (
                   <div className={styles["chat-message-actions"]}>
-                    <div className={styles["chat-message-action-date"]}>
-                      {message.date.toLocaleString()}
-                    </div>
                     {message.type && message.type == "imageResult" && (
                       <div className="flex-1">
                         <div className={styles["imageResult"]}>
@@ -1219,11 +1215,15 @@ export function Chat() {
                             V 4
                           </button>
                           <button
-                            className={styles["imageResetBtn"] + ` ${message.clickedList
-                                ? message.clickedList.includes("r")
-                                  ? styles["imageResultBntClick"]
-                                  : styles["imageResultBnt"]
-                                : ""}`
+                            className={
+                              styles["imageResetBtn"] +
+                              ` ${
+                                message.clickedList
+                                  ? message.clickedList.includes("r")
+                                    ? styles["imageResultBntClick"]
+                                    : styles["imageResultBnt"]
+                                  : ""
+                              }`
                             }
                             onClick={() => RESET(message)}
                           >
