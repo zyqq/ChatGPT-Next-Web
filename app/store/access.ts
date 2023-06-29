@@ -13,6 +13,7 @@ export interface AccessControlStore {
   needCode: boolean;
   hideUserApiKey: boolean;
   openaiUrl: string;
+  hideBalanceQuery: boolean;
   midJourneyAPI: string;
   midJourneyKey: string;
   midJourneyAPIURL: string;
@@ -47,6 +48,7 @@ export const useAccessStore = create<AccessControlStore>()(
       needCode: true,
       hideUserApiKey: false,
       openaiUrl: DEFAULT_OPENAI_URL,
+      hideBalanceQuery: false,
       midJourneyAPI: "/api/midjourney/",
       midJourneyKey: "",
       midJourneyAPIURL: "",
