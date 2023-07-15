@@ -315,6 +315,7 @@ export async function requestWithPrompt(
 ) {
   messages = messages.concat([
     {
+      id: '1',
       role: "user",
       content: prompt,
       date: new Date().toLocaleString(),

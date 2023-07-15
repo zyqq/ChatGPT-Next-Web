@@ -6,6 +6,11 @@ import { BOT_HELLO } from "./chat";
 import { getClientConfig } from "../config/client";
 
 export interface AccessControlStore {
+  proxyUrl: any;
+  mjMode: boolean;
+  midJourneyAPI: any;
+  midJourneyAccessCode: string;
+  midJourneyKey: string;
   accessCode: string;
   token: string;
 
@@ -35,6 +40,7 @@ console.log("[API] default openai url", DEFAULT_OPENAI_URL);
 
 export const useAccessStore = create<AccessControlStore>()(
   persist(
+    // @ts-ignore
     (set, get) => ({
       token: "",
       accessCode: "",
@@ -63,6 +69,7 @@ export const useAccessStore = create<AccessControlStore>()(
         set(() => ({ midJourneyKey }));
       },
       updateAPIURL(midJourneyAPIURL: string) {
+        // @ts-ignore
         set(() => ({ midJourneyAPIURL }));
       },
       updateMJMode(mjMode: boolean) {
