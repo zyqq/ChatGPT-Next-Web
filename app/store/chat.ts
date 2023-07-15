@@ -24,12 +24,13 @@ import { api, RequestMessage } from "../client/api";
 import { ChatControllerPool } from "../client/controller";
 import { prettyObject } from "../utils/format";
 import { estimateTokenLength } from "../utils/token";
+import { nanoid } from "nanoid";
 
 export type ChatMessage = RequestMessage & {
   date: string;
   streaming?: boolean;
   isError?: boolean;
-  id?: number;
+  id: string;
   model?: ModelType;
   taskId?: string;
   imageId?: string;
@@ -39,7 +40,7 @@ export type ChatMessage = RequestMessage & {
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
   return {
-    id: Date.now(),
+    id: nanoid(),
     date: new Date().toLocaleString(),
     role: "user",
     content: "",
@@ -54,7 +55,7 @@ export interface ChatStat {
 }
 
 export interface ChatSession {
-  id: number;
+  id: string;
   topic: string;
 
   memoryPrompt: string;
@@ -75,7 +76,7 @@ export const BOT_HELLO: ChatMessage = createMessage({
 
 function createEmptySession(): ChatSession {
   return {
-    id: Date.now() + Math.random(),
+    id: nanoid(),
     topic: DEFAULT_TOPIC,
     memoryPrompt: "",
     messages: [],
@@ -94,7 +95,6 @@ function createEmptySession(): ChatSession {
 interface ChatStore {
   sessions: ChatSession[];
   currentSessionIndex: number;
-  globalId: number;
   clearSessions: () => void;
   moveSession: (from: number, to: number) => void;
   selectSession: (index: number) => void;
@@ -151,7 +151,6 @@ export const useChatStore = create<ChatStore>()(
     (set, get) => ({
       sessions: [createEmptySession()],
       currentSessionIndex: 0,
-      globalId: 0,
 
       clearSessions() {
         set(() => ({
@@ -193,9 +192,6 @@ export const useChatStore = create<ChatStore>()(
 
       newSession(mask) {
         const session = createEmptySession();
-
-        set(() => ({ globalId: get().globalId + 1 }));
-        session.id = get().globalId;
 
         if (mask) {
           const config = useAppConfig.getState();
@@ -307,14 +303,12 @@ export const useChatStore = create<ChatStore>()(
         const botMessage: ChatMessage = createMessage({
           role: "assistant",
           streaming: true,
-          id: userMessage.id! + 1,
           model: modelConfig.model,
         });
 
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
-        const sessionIndex = get().currentSessionIndex;
         const messageIndex = get().currentSession().messages.length + 1;
 
         // save user's and bot's message
@@ -340,225 +334,54 @@ export const useChatStore = create<ChatStore>()(
           message: "",
         };
         // make request
-        console.log("[User Input] ", sendMessages);
-        let lastMessage = sendMessages[sendMessages.length - 1];
-        let op = "";
-        if (lastMessage.content.startsWith("/mj")) {
-          console.log(">>> 绘图模式 <<<");
-          // 请求API
-          if (lastMessage.content.startsWith("/mj UPSCALE")) {
-            let ops = lastMessage.content.split("|");
-            op = "UPSCALE";
-            res = await requestImage(
-              "UPSCALE",
-              true,
-              undefined,
-              Number(ops[2]),
-              ops[1],
-            );
-          } else if (lastMessage.content.startsWith("/mj VARIATION")) {
-            let ops = lastMessage.content.split("|");
-            op = "VARIATION";
-            res = await requestImage(
-              "VARIATION",
-              true,
-              undefined,
-              Number(ops[2]),
-              ops[1],
-            );
-          } else if (lastMessage.content.startsWith("/mj RESET")) {
-            let ops = lastMessage.content.split("|");
-            op = "RESET";
-            res = await requestImage(
-              "RESET",
-              true,
-              undefined,
-              undefined,
-              ops[1],
-            );
-          } else {
-            res = await requestImage(
-              "CREATE_IMAGE",
-              true,
-              lastMessage.content,
-              undefined,
-              undefined,
-            );
-          }
-
-          let hisMsg = new Array();
-          console.log(">>> 绘图结果：", res);
-          get().updateCurrentSession((session) => {
+        api.llm.chat({
+          messages: sendMessages,
+          config: { ...modelConfig, stream: true },
+          onUpdate(message) {
+            botMessage.streaming = true;
+            if (message) {
+              botMessage.content = message;
+            }
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+          },
+          onFinish(message) {
             botMessage.streaming = false;
-            botMessage.type = "image";
-          });
-          if (res.success) {
-            hisMsg.push(res.result.msg);
-            botMessage.taskId = res.result.taskId;
-            let status = 0;
-            // 起一个定时器每5秒请求一次直到返回状态大于2
-            let timer = setInterval(async () => {
-              let response = await requestImageResult(res.result.taskId);
-              console.log(">>> 正在绘图：", response);
-              if (response.success) {
-                if (status == 0 || status !== response.result.status) {
-                  hisMsg.push(response.result.msg);
-                  let hisMsgGether = "";
-                  if (hisMsg.length > 1) {
-                    // 除了最后一次全部加 ～～～～
-                    for (var i = 0; i < hisMsg.length - 1; i++) {
-                      hisMsgGether += "~~" + hisMsg[i] + "~~" + "\n";
-                    }
-                    hisMsgGether += hisMsg[hisMsg.length - 1];
-                  } else {
-                    hisMsgGether = hisMsg[0];
-                  }
-                  botMessage.content = hisMsgGether;
-                  status = response.result.status;
-                  get().updateCurrentSession((session) => {
-                    botMessage.streaming = false;
-                  });
-                }
-                // 删除定时器
-                if (response.result.status === 2) {
-                  clearInterval(timer);
-                  // 发图片 ![](图片链接)
-                  const imgMsg: ChatMessage = createMessage({
-                    role: "assistant",
-                    streaming: true,
-                    id: userMessage.id! + 1,
-                    model: modelConfig.model,
-                    type: op == "UPSCALE" ? "image" : "imageResult",
-                    clickedList: [],
-                  });
-                  const sessionIndex = get().currentSessionIndex;
-                  const messageIndex =
-                    get().currentSession().messages.length + 1;
-                  get().updateCurrentSession((session) => {
-                    session.messages.push(imgMsg);
-                    imgMsg.content = `![${response.result.prompt}](${response.result.imageUrl})`;
-                    imgMsg.imageId = response.result.imageId;
-                    imgMsg.streaming = false;
-                  });
-                  get().onNewMessage(botMessage);
-                  ControllerPool.remove(
-                    sessionIndex,
-                    imgMsg.id ?? messageIndex,
-                  );
-                } else if (response.result.status > 2) {
-                  clearInterval(timer);
-                }
-              }
-            }, 5000);
-          } else if (res.error) {
-            botMessage.content = res.msg;
-          } else {
-            botMessage.content = res.message;
-          }
-
-          get().onNewMessage(botMessage);
-          ControllerPool.remove(sessionIndex, botMessage.id ?? messageIndex);
-        } else {
-          api.llm.chat({
-            messages: sendMessages,
-            config: { ...modelConfig, stream: true },
-            onUpdate(message) {
-              botMessage.streaming = true;
-              if (message) {
-                botMessage.content = message;
-                updateCb(message);
-              }
-              get().updateCurrentSession((session) => {
-                session.messages = session.messages.concat();
+            if (message) {
+              botMessage.content = message;
+              get().onNewMessage(botMessage);
+            }
+            ChatControllerPool.remove(session.id, botMessage.id);
+          },
+          onError(error) {
+            const isAborted = error.message.includes("aborted");
+            botMessage.content =
+              "\n\n" +
+              prettyObject({
+                error: true,
+                message: error.message,
               });
-            },
-            onFinish(message) {
-              botMessage.streaming = false;
-              if (message) {
-                botMessage.content = message;
-                get().onNewMessage(botMessage);
-                message.includes('Rate limit') && updateCb('请求过于频繁，请稍等几秒');
-              }
-              ChatControllerPool.remove(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-              );
-              finishCb()
-            },
-            onError(error) {
-              const isAborted = error.message.includes("aborted");
-              botMessage.content =
-                "\n\n" +
-                prettyObject({
-                  error: true,
-                  message: error.message,
-                });
-              botMessage.streaming = false;
-              userMessage.isError = !isAborted;
-              botMessage.isError = !isAborted;
-              get().updateCurrentSession((session) => {
-                session.messages = session.messages.concat();
-              });
-              ChatControllerPool.remove(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-              );
-              updateCb(error);
-              console.error("[Chat] failed ", error);
-            },
-            onController(controller) {
-              // collect controller for stop/retry
-              ChatControllerPool.addController(
-                sessionIndex,
-                botMessage.id ?? messageIndex,
-                controller,
-              );
-            },
-          });
-          // requestChatStream(sendMessages, {
-          //   onMessage(content, done) {
-          //     // stream response
-          //     if (done) {
-          //       botMessage.streaming = false;
-          //       botMessage.content = content;
-          //       get().onNewMessage(botMessage);
-          //       ControllerPool.remove(
-          //         sessionIndex,
-          //         botMessage.id ?? messageIndex,
-          //       );
-          //     } else {
-          //       botMessage.content = content;
-          //       set(() => ({}));
-          //     }
-          //   },
-          //   onError(error, statusCode) {
-          //     const isAborted = error.message.includes("aborted");
-          //     if (statusCode === 401) {
-          //       botMessage.content = Locale.Error.Unauthorized;
-          //     } else if (!isAborted) {
-          //       botMessage.content += "\n\n" + Locale.Store.Error;
-          //     }
-          //     botMessage.streaming = false;
-          //     userMessage.isError = !isAborted;
-          //     botMessage.isError = !isAborted;
-
-          //     set(() => ({}));
-          //     ControllerPool.remove(
-          //       sessionIndex,
-          //       botMessage.id ?? messageIndex,
-          //     );
-          //   },
-          //   onController(controller) {
-          //     // collect controller for stop/retry
-          //     ControllerPool.addController(
-          //       sessionIndex,
-          //       botMessage.id ?? messageIndex,
-          //       controller,
-          //     );
-          //   },
-          //   modelConfig: { ...modelConfig },
-          // });
-        }
+            botMessage.streaming = false;
+            userMessage.isError = !isAborted;
+            botMessage.isError = !isAborted;
+            get().updateCurrentSession((session) => {
+              session.messages = session.messages.concat();
+            });
+            ChatControllerPool.remove(
+              session.id,
+              botMessage.id ?? messageIndex,
+            );
+          },
+          onController(controller) {
+            // collect controller for stop/retry
+            ChatControllerPool.addController(
+              session.id,
+              botMessage.id ?? messageIndex,
+              controller,
+            );
+          },
+        });
       },
 
       getMemoryPrompt() {
@@ -585,8 +408,7 @@ export const useChatStore = create<ChatStore>()(
         const contextPrompts = session.mask.context.slice();
 
         // system prompts, to get close to OpenAI Web ChatGPT
-        // only will be injected if user does not use a mask or set none context prompts
-        const shouldInjectSystemPrompts = contextPrompts.length === 0;
+        const shouldInjectSystemPrompts = modelConfig.enableInjectSystemPrompts;
         const systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
@@ -610,7 +432,7 @@ export const useChatStore = create<ChatStore>()(
           modelConfig.sendMemory &&
           session.memoryPrompt &&
           session.memoryPrompt.length > 0 &&
-          session.lastSummarizeIndex <= clearContextIndex;
+          session.lastSummarizeIndex > clearContextIndex;
         const longTermMemoryPrompts = shouldSendLongTermMemory
           ? [get().getMemoryPrompt()]
           : [];
@@ -763,11 +585,13 @@ export const useChatStore = create<ChatStore>()(
           modelConfig.sendMemory
         ) {
           api.llm.chat({
-            messages: toBeSummarizedMsgs.concat({
-              role: "system",
-              content: Locale.Store.Prompt.Summarize,
-              date: "",
-            }),
+            messages: toBeSummarizedMsgs.concat(
+              createMessage({
+                role: "system",
+                content: Locale.Store.Prompt.Summarize,
+                date: "",
+              }),
+            ),
             config: { ...modelConfig, stream: true },
             onUpdate(message) {
               session.memoryPrompt = message;
@@ -804,13 +628,12 @@ export const useChatStore = create<ChatStore>()(
     }),
     {
       name: StoreKey.Chat,
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
         const state = persistedState as any;
         const newState = JSON.parse(JSON.stringify(state)) as ChatStore;
 
         if (version < 2) {
-          newState.globalId = 0;
           newState.sessions = [];
 
           const oldSessions = state.sessions;
@@ -823,6 +646,14 @@ export const useChatStore = create<ChatStore>()(
             newSession.mask.modelConfig.compressMessageLengthThreshold = 1000;
             newState.sessions.push(newSession);
           }
+        }
+
+        if (version < 3) {
+          // migrate id to nanoid
+          newState.sessions.forEach((s) => {
+            s.id = nanoid();
+            s.messages.forEach((m) => (m.id = nanoid()));
+          });
         }
 
         return newState;

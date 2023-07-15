@@ -1,6 +1,7 @@
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
 
+// if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
@@ -28,7 +29,7 @@ const en: LocaleType = {
       Stop: "Stop",
       Retry: "Retry",
       Pin: "Pin",
-      PinToastContent: "Pinned 2 messages to contextual prompts",
+      PinToastContent: "Pinned 1 messages to contextual prompts",
       PinToastAction: "View",
       Delete: "Delete",
       Edit: "Edit",
@@ -69,6 +70,7 @@ const en: LocaleType = {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
     },
+    IsContext: "Contextual Prompt",
   },
   Export: {
     Title: "Export Messages",
@@ -88,6 +90,10 @@ const en: LocaleType = {
     Steps: {
       Select: "Select",
       Preview: "Preview",
+    },
+    Image: {
+      Toast: "Capturing Image...",
+      Modal: "Long press or right click to save image",
     },
   },
   Select: {
@@ -137,7 +143,10 @@ const en: LocaleType = {
       Title: "Font Size",
       SubTitle: "Adjust font size of chat content",
     },
-
+    InjectSystemPrompts: {
+      Title: "Inject System Prompts",
+      SubTitle: "Inject a global system prompt for every request",
+    },
     InputTemplate: {
       Title: "Input Template",
       SubTitle: "Newest message will be filled to this template",
@@ -159,8 +168,14 @@ const en: LocaleType = {
       SubTitle: "Preview markdown in bubble",
     },
     Mask: {
-      Title: "Mask Splash Screen",
-      SubTitle: "Show a mask splash screen before starting new chat",
+      Splash: {
+        Title: "Mask Splash Screen",
+        SubTitle: "Show a mask splash screen before starting new chat",
+      },
+      Builtin: {
+        Title: "Hide Builtin Masks",
+        SubTitle: "Hide builtin masks in mask list",
+      },
     },
     Prompt: {
       Disable: {
@@ -240,10 +255,18 @@ const en: LocaleType = {
       Title: "Endpoint",
       SubTitle: "Custom endpoint must start with http(s)://",
     },
+    CustomModel: {
+      Title: "Custom Models",
+      SubTitle: "Add extra model options, separate by comma",
+    },
     Model: "Model",
     Temperature: {
       Title: "Temperature",
       SubTitle: "A larger value makes the more random output",
+    },
+    TopP: {
+      Title: "Top P",
+      SubTitle: "Do not alter this value together with temperature",
     },
     MaxTokens: {
       Title: "Max Tokens",
@@ -279,7 +302,7 @@ const en: LocaleType = {
   },
   Context: {
     Toast: (x: any) => `With ${x} contextual prompts`,
-    Edit: "Contextual and Memory Prompts",
+    Edit: "Current Chat Settings",
     Add: "Add a Prompt",
     Clear: "Context Cleared",
     Revert: "Revert",
@@ -320,6 +343,11 @@ const en: LocaleType = {
       HideContext: {
         Title: "Hide Context Prompts",
         SubTitle: "Do not show in-context prompts in chat",
+      },
+      Share: {
+        Title: "Share This Mask",
+        SubTitle: "Generate a link to this mask",
+        Action: "Copy Link",
       },
     },
   },
