@@ -6,7 +6,7 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized:
-      "Unauthorized access, please enter access code in [auth](/#/auth) page.",
+      "Unauthorized access, please enter access code in [auth](/#/auth) page.Alternatively, you can enter your own OpenAI API key on the [Settings page](/#/settings) or follow our WeChat official account '秋博士' to get the access password.\n![秋博士](https://i.postimg.cc/dtWjSGDN/me.jpg)",
   },
   Auth: {
     Title: "Need Access Code",
@@ -24,6 +24,7 @@ const en: LocaleType = {
       ChatList: "Go To Chat List",
       CompressedHistory: "Compressed History Memory Prompt",
       Export: "Export All Messages as Markdown",
+      Open: "Open",
       Copy: "Copy",
       Stop: "Stop",
       Retry: "Retry",
@@ -32,6 +33,7 @@ const en: LocaleType = {
       PinToastAction: "View",
       Delete: "Delete",
       Edit: "Edit",
+      Run: "Run Code",
     },
     Commands: {
       new: "Start a new chat",
@@ -206,6 +208,34 @@ const en: LocaleType = {
       Title: "API Key",
       SubTitle: "Use your key to ignore access code limit",
       Placeholder: "OpenAI API Key",
+    },
+    MjKey: {
+      Title: "MJ API Key",
+      SubTitle: "Quickly configure MJ API Key",
+      Placeholder: "Midjourney API Key",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "Configure MJ API URL",
+      Placeholder: "Midjourney API URL",
+    },
+
+    MjMode: {
+      name: "MJ Quick Mapping",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Contains http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney Access Code",
+      SubTitle: "Admin has enabled encrypted access",
+      Placeholder: "Please enter the access code",
     },
     Usage: {
       Title: "Account Balance",

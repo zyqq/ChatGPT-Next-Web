@@ -1,6 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+// import { ChatCompletionResponseMessage } from "openai";
+import {
+  ControllerPool,
+  requestChatStream,
+  requestImage,
+  requestImageResult,
+  requestWithPrompt,
+} from "../requests";
 import { trimTopic } from "../utils";
 
 import Locale, { getLang } from "../locales";
@@ -24,6 +32,10 @@ export type ChatMessage = RequestMessage & {
   isError?: boolean;
   id: string;
   model?: ModelType;
+  taskId?: string;
+  imageId?: string;
+  clickedList?: string[];
+  type?: "chat" | "image" | "imageResult";
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -91,7 +103,7 @@ interface ChatStore {
   currentSession: () => ChatSession;
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (content: string, finishCb?: Function, updateCb?: Function) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -271,10 +283,12 @@ export const useChatStore = create<ChatStore>()(
           session.lastUpdate = Date.now();
         });
         get().updateStat(message);
-        get().summarizeSession();
+        if (!message.type || !message.type.includes("image")) {
+          get().summarizeSession();
+        }
       },
 
-      async onUserInput(content) {
+      async onUserInput(content, finishCb = () => {}, updateCb=(msg: any) =>{}) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -309,6 +323,16 @@ export const useChatStore = create<ChatStore>()(
           ]);
         });
 
+        let res = {
+          success: false,
+          result: {
+            msg: "",
+            taskId: "",
+          },
+          error: "",
+          msg: "",
+          message: "",
+        };
         // make request
         api.llm.chat({
           messages: sendMessages,
@@ -348,8 +372,6 @@ export const useChatStore = create<ChatStore>()(
               session.id,
               botMessage.id ?? messageIndex,
             );
-
-            console.error("[Chat] failed ", error);
           },
           onController(controller) {
             // collect controller for stop/retry
@@ -490,25 +512,42 @@ export const useChatStore = create<ChatStore>()(
           session.topic === DEFAULT_TOPIC &&
           countMessages(messages) >= SUMMARIZE_MIN_LEN
         ) {
-          const topicMessages = messages.concat(
+          if (
+            session.messages[session.messages.length - 1].content.startsWith(
+              "/mj",
+            )
+          ) {
+            console.log(">>> 绘图模式 <<<");
+            return;
+          } else {
+            const topicMessages = messages.concat(
             createMessage({
-              role: "user",
-              content: Locale.Store.Prompt.Topic,
-            }),
-          );
-          api.llm.chat({
-            messages: topicMessages,
-            config: {
-              model: "gpt-3.5-turbo",
-            },
-            onFinish(message) {
-              get().updateCurrentSession(
-                (session) =>
-                  (session.topic =
-                    message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
-              );
-            },
-          });
+                role: "user",
+                content: Locale.Store.Prompt.Topic,
+              }),
+            );
+            api.llm.chat({
+              messages: topicMessages,
+              config: {
+                model: "gpt-3.5-turbo",
+              },
+              onFinish(message) {
+                get().updateCurrentSession(
+                  (session) =>
+                    (session.topic =
+                      message.length > 0 ? trimTopic(message) : DEFAULT_TOPIC),
+                );
+              },
+            });
+            // requestWithPrompt(session.messages, Locale.Store.Prompt.Topic, {
+            //   model: "gpt-3.5-turbo",
+            // }).then((res) => {
+            //   get().updateCurrentSession(
+            //     (session) =>
+            //       (session.topic = res ? trimTopic(res) : DEFAULT_TOPIC),
+            //   );
+            // });
+          }
         }
 
         const modelConfig = session.mask.modelConfig;

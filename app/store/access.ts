@@ -17,6 +17,9 @@ export interface AccessControlStore {
   openaiUrl: string;
 
   updateToken: (_: string) => void;
+  updateMJKey: (_: string) => void;
+  updateMjCode: (_: string) => void;
+  updateAPIURL: (_: string) => void;
   updateCode: (_: string) => void;
   updateOpenAiUrl: (_: string) => void;
   enabledAccessControl: () => boolean;
@@ -55,6 +58,21 @@ export const useAccessStore = create<AccessControlStore>()(
       },
       updateOpenAiUrl(url: string) {
         set(() => ({ openaiUrl: url }));
+      },
+      updateMJKey(midJourneyKey: string) {
+        set(() => ({ midJourneyKey }));
+      },
+      updateAPIURL(midJourneyAPIURL: string) {
+        set(() => ({ midJourneyAPIURL }));
+      },
+      updateMJMode(mjMode: boolean) {
+        set(() => ({ mjMode }));
+      },
+      updateMJProxyUrl(proxyUrl: string) {
+        set(() => ({ proxyUrl }));
+      },
+      updateMjCode(code: string) {
+        set(() => ({ midJourneyAccessCode: code }));
       },
       isAuthorized() {
         get().fetch();

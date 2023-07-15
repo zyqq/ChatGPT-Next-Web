@@ -20,6 +20,7 @@ const ko: PartialLocaleType = {
       Stop: "중지",
       Retry: "다시 시도",
       Delete: "삭제",
+      Run: "Run Code",
     },
     Rename: "채팅 이름 변경",
     Typing: "입력 중...",
@@ -127,6 +128,35 @@ const ko: PartialLocaleType = {
       Title: "API 키",
       SubTitle: "액세스 코드 제한을 무시하기 위해 키 사용",
       Placeholder: "OpenAI API 키",
+    },
+
+    MjKey: {
+      Title: "MJ API Key",
+      SubTitle: "配置后再在聊天框输入/mj+提示词",
+      Placeholder: "Midjourney API Key",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "配置MJ API URL",
+      Placeholder: "Midjourney API URL",
+    },
+
+    MjMode: {
+      name: "MJ 快速制图",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ 反向代理",
+      Placeholder: "包含http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney 访问密码",
+      SubTitle: "管理员已开启加密访问",
+      Placeholder: "请输入访问密码",
     },
     Usage: {
       Title: "계정 잔액",

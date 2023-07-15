@@ -1,20 +1,25 @@
-<div align="center">
-<img src="./docs/images/icon.svg" alt="icon"/>
+# ChatGPT 聊天室
 
-<h1 align="center">ChatGPT Next Web</h1>
+## 一、简介
 
-English / [简体中文](./README_CN.md)
+基于开源项目改造：<https://github.com/Yidadaa/ChatGPT-Next-Web>
 
 One-Click to get well-designed cross-platform ChatGPT web UI.
+线上网站：<https://chatgpt-echo.zeabur.app/>
 
 一键免费部署你的跨平台私人 ChatGPT 应用。
+## 二、开发协作
 
 [![Web][Web-image]][web-url]
 [![Windows][Windows-image]][download-url]
 [![MacOS][MacOS-image]][download-url]
 [![Linux][Linux-image]][download-url]
+- 从 main 新建分支，命名规范为：[name]/[feature|fix]/[修改点]
+- 提 mr 到 main
 
 [Web App](https://chatgpt.nextweb.fun/) / [Desktop App](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+线上网站会自动部署更新
+[演示](https://chatgpt.nextweb.fun/) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
 [网页版](https://chatgpt.nextweb.fun/) / [客户端](https://github.com/Yidadaa/ChatGPT-Next-Web/releases) / [反馈](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [QQ 群](https://github.com/Yidadaa/ChatGPT-Next-Web/discussions/1724) / [打赏开发者](https://user-images.githubusercontent.com/16968934/227772541-5bcd52d8-61b7-488c-a203-0330d8006e2b.jpg)
 
@@ -26,12 +31,32 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 [Linux-image]: https://img.shields.io/badge/-Linux-333?logo=ubuntu
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Zo3i/chatgptWithMidjourney&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Zo3i/chatgptWithMidjourney)
 
 ![cover](./docs/images/cover.png)
 
 </div>
+
+### 如何使用Midjourney
+- 在.env.local(没有要创建)中添加MIDJOURNEY_API_KEY、MIDJOURNEY_API_URL、MIDJOURNEY_IMG_PROXY（可选）。接口地址和key
+  ```local
+   示例:
+   OPENAI_API_KEY=sk-xxx
+   MIDJOURNEY_API_KEY=35fc0377-ca20-4244-8e44-7a930b7591ab
+   MIDJOURNEY_API_URL=https://api.zxx.im/
+   MIDJOURNEY_IMG_PROXY=https://img.zxx.im
+   ```
+- 输入/mj 即可使用绘图模式
+- 绘图期间请勿刷新网页、切换别的聊天窗口。
+- [MidjourneyAPI](https://midjourneyapi.zxx.im/)
+
+也可以直接在设置里面填写mj key即可调用绘图功能。国内用户访问，可以配置反向代理，MIDJOURNEY_IMG_PROXY参数。
+<img width="779" alt="image" src="https://github.com/Zo3i/chatgptWithMidjourney/assets/30296801/e9c95f59-3232-404a-8cdf-5c9eefc8d424">
+
+
+![](https://s3.bmp.ovh/imgs/2023/05/15/f0c7f67ef3eb075b.png)
 
 ## Features
 
@@ -100,7 +125,7 @@ One-Click to get well-designed cross-platform ChatGPT web UI.
 
 1. Get [OpenAI API Key](https://platform.openai.com/account/api-keys);
 2. Click
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Zo3i/chatgptWithMidjourney&env=OPENAI_API_KEY&env=CODE&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web), remember that `CODE` is your page password;
 3. Enjoy :)
 
 ## FAQ
@@ -199,7 +224,7 @@ NodeJS >= 18, Docker >= 20
 
 > [简体中文 > 如何进行二次开发](./README_CN.md#开发)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Zo3i/chatgptWithMidjourney)
 
 Before starting development, you must create a new `.env.local` file at project root, and place your api key into it:
 
@@ -227,12 +252,9 @@ yarn dev
 ### Docker (Recommended)
 
 ```shell
-docker pull yidadaa/chatgpt-next-web
+docker pull zo3i/chatgptwithmidjourney
 
-docker run -d -p 3000:3000 \
-   -e OPENAI_API_KEY="sk-xxxx" \
-   -e CODE="your-password" \
-   yidadaa/chatgpt-next-web
+docker run -d -p 3000:3000 -e OPENAI_API_KEY="sk-xxxx" -e CODE="your-password" zo3i/chatgptwithmidjourney
 ```
 
 You can start service behind a proxy:
@@ -242,7 +264,7 @@ docker run -d -p 3000:3000 \
    -e OPENAI_API_KEY="sk-xxxx" \
    -e CODE="your-password" \
    -e PROXY_URL="http://localhost:7890" \
-   yidadaa/chatgpt-next-web
+   zo3i/chatgptwithmidjourney
 ```
 
 If your proxy needs password, use:

@@ -30,6 +30,19 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   }
 })();
 
+const MJ_ACCESS_CODES = (function getAccessCodes(): Set<string> {
+  const code = process.env.MJ_CODE;
+
+  try {
+    const codes = (code?.split(",") ?? [])
+      .filter((v) => !!v)
+      .map((v) => md5.hash(v.trim()));
+    return new Set(codes);
+  } catch (e) {
+    return new Set();
+  }
+})();
+
 export const getServerSideConfig = () => {
   if (typeof process === "undefined") {
     throw Error(
@@ -41,6 +54,7 @@ export const getServerSideConfig = () => {
     apiKey: process.env.OPENAI_API_KEY,
     code: process.env.CODE,
     codes: ACCESS_CODES,
+    mjCodes: MJ_ACCESS_CODES,
     needCode: ACCESS_CODES.size > 0,
     baseUrl: process.env.BASE_URL,
     proxyUrl: process.env.PROXY_URL,
@@ -48,5 +62,6 @@ export const getServerSideConfig = () => {
     hideUserApiKey: !!process.env.HIDE_USER_API_KEY,
     disableGPT4: !!process.env.DISABLE_GPT4,
     hideBalanceQuery: !!process.env.HIDE_BALANCE_QUERY,
+    midJourneyKey: process.env.MIDJOURNEY_API_KEY,
   };
 };

@@ -6,6 +6,7 @@ import { IconButton } from "./button";
 import SettingsIcon from "../icons/settings.svg";
 import GithubIcon from "../icons/github.svg";
 import ChatGptIcon from "../icons/chatgpt.svg";
+import WebsiteIcon from "../icons/website.svg";
 import AddIcon from "../icons/add.svg";
 import CloseIcon from "../icons/close.svg";
 import MaskIcon from "../icons/mask.svg";
@@ -21,6 +22,7 @@ import {
   NARROW_SIDEBAR_WIDTH,
   Path,
   REPO_URL,
+  WEB_URL,
 } from "../constant";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -120,7 +122,8 @@ export function SideBar(props: { className?: string }) {
           ChatGPT Next
         </div>
         <div className={styles["sidebar-sub-title"]}>
-          Build your own AI assistant.
+          <a target="_blank" href="https://zyqq.github.io/chatgpt-web/">免责声明，</a>
+          微信公众号获取访问密码：秋博士
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -175,6 +178,11 @@ export function SideBar(props: { className?: string }) {
           <div className={styles["sidebar-action"]}>
             <a href={REPO_URL} target="_blank">
               <IconButton icon={<GithubIcon />} shadow />
+            </a>
+          </div>
+          <div className={styles["sidebar-action"]}>
+            <a href={WEB_URL} target="_blank">
+              <IconButton icon={<WebsiteIcon />} shadow />
             </a>
           </div>
         </div>

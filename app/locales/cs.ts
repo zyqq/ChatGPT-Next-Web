@@ -16,10 +16,12 @@ const cs: PartialLocaleType = {
       ChatList: "Přejít na seznam chatů",
       CompressedHistory: "Pokyn z komprimované paměti historie",
       Export: "Exportovat všechny zprávy jako Markdown",
+      Open: "Zobrazit",
       Copy: "Kopírovat",
       Stop: "Zastavit",
       Retry: "Zopakovat",
       Delete: "Smazat",
+      Run: "Run Code",
     },
     Rename: "Přejmenovat chat",
     Typing: "Píše...",
@@ -129,6 +131,35 @@ const cs: PartialLocaleType = {
       SubTitle: "Použitím klíče ignorujete omezení přístupového kódu",
       Placeholder: "Klíč API OpenAI",
     },
+    MjKey: {
+      Title: "MJ API Klíč",
+      SubTitle: "Rychlé nastavení MJ API Klíče",
+      Placeholder: "MJ API Klíč",
+    },
+
+    MjApiUrl: {
+      Title: "MJ API URL",
+      SubTitle: "Nastavení MJ API URL",
+      Placeholder: "MJ API URL",
+    },
+
+    MjMode: {
+      name: "MJ Rychlý režim",
+      SubTitle: "快出图需耗费5积分/0.35￥，慢出图则耗费1积分/0.07￥）",
+      fastMode: false,
+    },
+
+    MjProxyUrl: {
+      name: "MJ Proxy",
+      Placeholder: "Obsahuje http(s)//",
+    },
+
+    MJAccessCode: {
+      Title: "Midjourney Přístupové heslo",
+      SubTitle: "Správce povolil šifrovaný přístup",
+      Placeholder: "Zadejte přístupové heslo",
+    },
+
     Usage: {
       Title: "Stav účtu",
       SubTitle(used: any, total: any) {
