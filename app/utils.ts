@@ -55,7 +55,7 @@ export function handleMsg() {
   })
 }
 
-export function evalCode(text: string, key: number) {
+export function evalCode(text: string, key: string) {
   const regex = /\/\/ ==UserScript==([\s\S]*)\}\)\(\);/;
   const match = text.match(regex);
 
