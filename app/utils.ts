@@ -215,12 +215,10 @@ export function isMacOS(): boolean {
   return false
 }
 
-interface vscode {
-  postMessage(message: any): void;
-}
-declare const vscode: vscode;
 
 export function postMsg({ type, ...data }: Record<string, unknown>) {
+  /** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
+  const vscode = acquireVsCodeApi();
   // window.parent.postMessage({ data, type, origin: "chatgpt-web" }, "*");
   vscode.postMessage({ type, message: data });
 }
