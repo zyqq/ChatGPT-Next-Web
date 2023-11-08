@@ -760,7 +760,7 @@ function _Chat() {
       "message",
       (event) => {
         // 在这里处理来自外部窗口的消息
-        if (event.data.origin && event.data.origin === "parent") {
+        // if (event.data.origin && event.data.origin === "parent") {
           console.log("parent", event.data, event);
           const createSession = (type: string) => {
             chatStore.newSession();
@@ -811,7 +811,7 @@ function _Chat() {
           if (event.data.type === "clickElement") {
             // setUserInput(event.data.data.content);
           }
-        }
+        // }
       },
       false,
     );
