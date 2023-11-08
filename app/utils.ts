@@ -215,9 +215,14 @@ export function isMacOS(): boolean {
   return false
 }
 
+interface vscode {
+  postMessage(message: any): void;
+}
+declare const vscode: vscode;
 
 export function postMsg({ type, ...data }: Record<string, unknown>) {
-  window.parent.postMessage({ data, type, origin: "chatgpt-web" }, "*");
+  // window.parent.postMessage({ data, type, origin: "chatgpt-web" }, "*");
+  vscode.postMessage({ type, message: data });
 }
 
 export function handleMsg() {
