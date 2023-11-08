@@ -217,10 +217,10 @@ export function isMacOS(): boolean {
 
 
 export function postMsg({ type, ...data }: Record<string, unknown>) {
-  /** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
-  const vscode = acquireVsCodeApi();
-  // window.parent.postMessage({ data, type, origin: "chatgpt-web" }, "*");
-  vscode.postMessage({ type, message: data });
+  // /** @ts-ignore @type {{ getState: function():any, setState: function(any):void, postMessage: function(any):void }} */
+  // const vscode = acquireVsCodeApi();
+  // vscode.postMessage({ type, message: data });
+  window.parent.postMessage({ message: data, type, origin: "chatgpt-web" }, "*");
 }
 
 export function handleMsg() {
