@@ -53,6 +53,7 @@ import {
   selectOrCopy,
   autoGrowTextArea,
   useMobileScreen,
+  postMsg,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -750,6 +751,70 @@ function _Chat() {
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+
+    postMsg({ type: "ready" });
+
+    // 监听油猴插件消息事件
+    window.addEventListener(
+      "message",
+      (event) => {
+        // 在这里处理来自外部窗口的消息
+        if (event.data.origin && event.data.origin === "parent") {
+          console.log("parent", event.data, event);
+          const createSession = (type: string) => {
+            chatStore.newSession();
+            chatStore.selectSession(0);
+            navigate(Path.Chat);
+            const currentSession = chatStore.currentSession();
+            chatStore.onUserInput(
+              event.data.data.content,
+              () => {
+                // const currentSession = chatStore.currentSession();
+                // console.log("currentSession", chatStore);
+                // postMsg({
+                //   type,
+                //   content:
+                //     currentSession.messages[currentSession.messages.length - 1]
+                //       .content,
+                // });
+              },
+              (msg: any) => {
+                // console.log("get", msg);
+                postMsg({
+                  type,
+                  content: msg,
+                });
+              },
+            );
+          };
+
+          // 整个网页内容操作
+          if (event.data.type === "read") {
+            // console.log('event.data', event.data.data.content);
+            doSubmit(`${event.data.data.content.join("")}。
+            请总结以上文本内容`);
+            // doSubmit('请总结以下文本内容，我将分为几段发送：')
+            // event.data.data.content.forEach((item: string, index: number) => {
+            //   doSubmit(`第${index+1}段内容为: ${item}`)
+            // })
+          }
+          // chatgpt 增强搜索
+          if (event.data.type === "search") {
+            createSession(event.data.type);
+          }
+          // chatgpt 选中文本
+          if (event.data.type === "selectText") {
+            createSession(event.data.type);
+          }
+          // chatgpt 选中文本
+          if (event.data.type === "clickElement") {
+            // setUserInput(event.data.data.content);
+          }
+        }
+      },
+      false,
+    );
   }, []);
 
   // check if should send message

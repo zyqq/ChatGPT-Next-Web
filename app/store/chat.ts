@@ -96,7 +96,11 @@ interface ChatStore {
   currentSession: () => ChatSession;
   nextSession: (delta: number) => void;
   onNewMessage: (message: ChatMessage) => void;
-  onUserInput: (content: string) => Promise<void>;
+  onUserInput: (
+    content: string,
+    finishCb?: Function,
+    updateCb?: Function,
+  ) => Promise<void>;
   summarizeSession: () => void;
   updateStat: (message: ChatMessage) => void;
   updateCurrentSession: (updater: (session: ChatSession) => void) => void;
@@ -293,7 +297,11 @@ export const useChatStore = createPersistStore(
         get().summarizeSession();
       },
 
-      async onUserInput(content: string) {
+      async onUserInput(
+        content: string,
+        finishCb = () => {},
+        updateCb = (msg: any) => {},
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
@@ -339,6 +347,7 @@ export const useChatStore = createPersistStore(
             }
             get().updateCurrentSession((session) => {
               session.messages = session.messages.concat();
+              updateCb(message);
             });
           },
           onFinish(message) {
@@ -346,8 +355,11 @@ export const useChatStore = createPersistStore(
             if (message) {
               botMessage.content = message;
               get().onNewMessage(botMessage);
+              message.includes("Rate limit") &&
+                updateCb("请求过于频繁，请稍等几秒");
             }
             ChatControllerPool.remove(session.id, botMessage.id);
+            finishCb();
           },
           onError(error) {
             const isAborted = error.message.includes("aborted");
@@ -368,6 +380,7 @@ export const useChatStore = createPersistStore(
               botMessage.id ?? messageIndex,
             );
 
+            updateCb(error);
             console.error("[Chat] failed ", error);
           },
           onController(controller) {

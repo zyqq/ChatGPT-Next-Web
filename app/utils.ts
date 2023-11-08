@@ -214,3 +214,32 @@ export function isMacOS(): boolean {
   }
   return false
 }
+
+
+export function postMsg({ type, ...data }: Record<string, unknown>) {
+  window.parent.postMessage({ data, type, origin: "chatgpt-web" }, "*");
+}
+
+export function handleMsg() {
+  return new Promise((resolve, reject) => {
+    // 监听油猴插件消息事件
+    window.addEventListener(
+      "message",
+      (event) => {
+        // 在这里处理来自外部窗口的消息
+        if (event.data.origin && event.data.origin === "parent") {
+          console.log("parent", event.data, event);
+          if (event.data.selectionText) {
+            // TODO: 1、选择的文本操作
+          }
+          // TODO: 2、整个网页内容操作
+          if (event.data.type === "read") {
+            console.log("event.data", event.data.data.content);
+            resolve(event.data.data.content);
+          }
+        }
+      },
+      false,
+    );
+  });
+}
